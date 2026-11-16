@@ -135,7 +135,7 @@ li button{background:none;border:0;color:var(--plum);font:600 13px var(--body);c
   <section class="events">
     <div class="evhead"><h2>Händer i Uppsala</h2><span class="eyebrow" id="updated">Uppdaterad 15 nov</span></div>
     <div class="chips" id="evfilter" role="group" aria-label="Filtrera evenemang">
-      <button type="button" data-v="" aria-pressed="true">Allt</button><button type="button" data-v="musik" aria-pressed="false">Musik</button><button type="button" data-v="dans" aria-pressed="false">Dans</button><button type="button" data-v="kultur" aria-pressed="false">Kultur</button><button type="button" data-v="skapa" aria-pressed="false">Skapa</button>
+      <button type="button" data-v="" aria-pressed="true">Allt</button><button type="button" data-v="musik" aria-pressed="false">Musik</button><button type="button" data-v="dans" aria-pressed="false">Dans</button><button type="button" data-v="kultur" aria-pressed="false">Kultur</button><button type="button" data-v="skapa" aria-pressed="false">Skapa</button><button type="button" data-v="marknad" aria-pressed="false">Julmarknader</button>
     </div>
     <ul id="evlist"></ul>
     <p class="empty" id="evEmpty" hidden>Inget inlagt i den här kategorin just nu.</p>
@@ -280,6 +280,18 @@ const A=[
 
 /* Evenemang: [datum, tid, titel, beskrivning, plats, kategori musik|dans|kultur, länk] */
 const E=[
+["2026-11-21","10:00","Ulva julmarknad","Julmarknad i hantverksbyn vid Fyrisån, kl 10–16 både lördag och söndag.","Ulva kvarn","marknad","https://www.ulvakvarn.com/ulva-julmarknad/"],
+["2026-11-21","","Julmarknad på Kaleido","Konsthantverkarnas julbutik vid centralstationen, öppen fram till 5 januari.","Kaleido konsthantverk","marknad","https://destinationuppsala.se/event/julmarknad-pa-kaleido/"],
+["2026-11-28","11:00","Historisk julmarknad i Gamla Uppsala","Hantverk med historisk koppling vid högarna, kl 11–16 både lördag och söndag.","Gamla Uppsala museum","marknad","https://destinationuppsala.se/event/historisk-julmarknad-i-gamla-uppsala-2026/"],
+["2026-11-28","11:00","Julmarknad på Skoklosters slott","Julmarknad på barockslottet vid Mälaren, kl 11–16 lördag och söndag.","Skoklosters slott","marknad","https://skoklostersslott.se/en/visit-us/christmas-market"],
+["2026-11-28","","Ull i Upplands julmarknad","Julmarknad med ull och hantverk.","Övre Slotts","marknad","https://destinationuppsala.se/event/ull-i-upplands-julmarknad/"],
+["2026-11-28","","Julmarknad på chokladfabriken","Julmarknad hos Vegan Delights chokladfabrik.","Vegan Delights","marknad","https://destinationuppsala.se/event/julmarknad-pa-chokladfabriken-2026/"],
+["2026-12-04","","UF-julmarknad på Forumtorget","Unga entreprenörer säljer sina produkter, 4–5 december.","Forumtorget","marknad","https://destinationuppsala.se/event/uf-julmarknad-pa-forumtorget-2026/"],
+["2026-12-05","","Julmarknad vid Vallhovs säteri","Julmarknad på säteriet, 5–6 december.","Vallhovs säteri","marknad","https://destinationuppsala.se/event/julmarknad-vid-vallhovs-sateri-2026/"],
+["2026-12-05","","Julmarknad i Storvreta","Julmarknad vid församlingsgården.","Storvreta församlingsgård","marknad","https://destinationuppsala.se/event/julmarknad-vid-storvreta-forsamlingsgard-2026/"],
+["2026-12-06","","Julmarknad och adventskonsert på Salsta slott","Julmarknad och konsert på slottet i norra Uppland.","Salsta slott","marknad","https://destinationuppsala.se/event/julmarknad-och-adventskonsert-pa-salsta-slott-2026/"],
+["2026-12-06","","Julmarknad vid Hammarskogs herrgård","Julmarknad på herrgården vid Ekoln.","Hammarskogs herrgård","marknad","https://destinationuppsala.se/event/julmarknad-vid-hammarskogs-herrgard/"],
+["2026-12-12","","Lantlig julmarknad på Ekbolanda gård","Julmarknad på landet, 12–13 december.","Ekbolanda gård","marknad","https://destinationuppsala.se/event/lantlig-julmarknad-pa-ekbolanda-gard/"],
 ["2026-11-17","20:00","Moonica Mac","Spelning i den mindre jazzklubbsdelen på Katalin.","Katalin and all that jazz","musik","https://stadsevent.se/uppsala/evenemang/katalin-and-all-that-jazz/35324/moonica-mac"],
 ["2026-11-18","19:00","Kvinnor och äppelträd","Dans och teater på Gottsunda Dans & Teater.","Gottsunda Dans & Teater","kultur","https://stadsevent.se/uppsala/evenemang/gottsunda-dans-och-teater/52692/kvinnor-och-äppelträd"],
 ["2026-11-16","13:00","Hantverkskafé i Lötenkyrkan","Sy, laga, sticka och fika tillsammans. Måndagar kl 13–15 fram till 14 december.","Lötenkyrkan","skapa","https://www.svenskakyrkan.se/uppsala/skapande-verksamhet"],
@@ -298,8 +310,8 @@ const E=[
 ["2026-11-26","19:00","City Lights med Uppsala Kammarorkester","Kammarorkestern i Stora salen.","Uppsala Konsert & Kongress","musik","https://stadsevent.se/uppsala/evenemang/uppsala-konsert-och-kongress-stora-salen/24955/city-lights-uppsala-kammarorkester"],
 ["2026-11-26","20:00","Den Svenska Björnstammen","Popkonsert, spelas även 27 nov.","Katalin and all that jazz","musik","https://stadsevent.se/uppsala/evenemang/katalin-and-all-that-jazz/22600/den-svenska-björnstammen"],
 ["2026-11-26","18:00","Konst & bar: grafik och keramik","Konst och en drink en torsdagskväll.","Uppsala","kultur","https://stadsevent.se/uppsala/evenemang/annan-plats/52990/konst-och-bar-grafik-och-keramik"],
-["2026-11-28","","Julmarknad i Ulleråker","Gratis julmarknad med dansbana, musik och eldshow i Solglimtsparken.","Solglimtsparken, Ulleråker","kultur","https://gratisuppsala.se/events/julmarknad-i-ulleraker-2026/"],
-["2026-11-28","","Julmarknad i Kopphagen","Julmarknad med dansbana och eldshow vid festplatsen i Länna.","Kopphagen, Länna","kultur","https://gratisuppsala.se/events/julmarknad-i-kopphagen-november2026/"],
+["2026-11-28","","Julmarknad i Ulleråker","Gratis julmarknad med dansbana, musik och eldshow i Solglimtsparken.","Solglimtsparken, Ulleråker","marknad","https://gratisuppsala.se/events/julmarknad-i-ulleraker-2026/"],
+["2026-11-28","","Julmarknad i Kopphagen","Julmarknad med dansbana och eldshow vid festplatsen i Länna.","Kopphagen, Länna","marknad","https://gratisuppsala.se/events/julmarknad-i-kopphagen-november2026/"],
 ["2026-11-28","19:00","Kvällsdans med Black Jack","Dansbandsdans kl 19–23.","Fyris Park","dans","https://www.danslogen.se/dansprogram/lan/uppsala"],
 ["2026-11-28","21:00","Nostalgiklubben","Klubbkväll med gamla hits på Flustret.","Flustret","dans","https://stadsevent.se/uppsala/evenemang/flustret/53246/nostalgiklubben"],
 ["2026-11-29","15:00","Gud och garn: stick- och virkträff","Sticka och virka tillsammans, för nybörjare och vana, kl 15–17.","Eriksbergskyrkan","skapa","https://www.svenskakyrkan.se/uppsala/skapande-verksamhet"],
@@ -309,8 +321,8 @@ const E=[
 ["2026-12-03","19:30","Seinabo Sey","Konsert i Stora salen.","Uppsala Konsert & Kongress","musik","https://stadsevent.se/uppsala/evenemang/uppsala-konsert-och-kongress-stora-salen/20170/seinabo-sey"],
 ["2026-12-04","20:00","Kvällsdans med Blender","Dansbandsdans kl 20–24.","Fyris Park","dans","https://www.danslogen.se/dansprogram/lan/uppsala"],
 ["2026-12-04","20:00","The Fantastic Four: A Motown Christmas","Motown och jul, perfekt att dansa till.","Katalin","musik","https://stadsevent.se/uppsala/evenemang/katalin/18518/the-fantastic-four-a-motown-christmas-uppsala"],
-["2026-12-05","","Uppsala historiska julmarknad","Historisk julmarknad på S:t Eriks torg, även 6 december.","S:t Eriks torg","kultur","https://destinationuppsala.se/event/uppsala-historiska-julmarknad-2026/"],
-["2026-12-06","11:00","Local Femmes julmarknad","Gratis julmarknad med lokala hantverkare och småföretagare.","Uppsala Konsert & Kongress","kultur","https://ukk.se/local-femmes-julmarknad-2026/"],
+["2026-12-05","","Uppsala historiska julmarknad","Historisk julmarknad på S:t Eriks torg, även 6 december.","S:t Eriks torg","marknad","https://destinationuppsala.se/event/uppsala-historiska-julmarknad-2026/"],
+["2026-12-06","11:00","Local Femmes julmarknad","Gratis julmarknad med lokala hantverkare och småföretagare.","Uppsala Konsert & Kongress","marknad","https://ukk.se/local-femmes-julmarknad-2026/"],
 ["2026-12-06","18:00","Regina peregrina","Musikalisk vandring genom museet med musik från drottning Kristinas hov. 200 kr, boka via museum.gust@uu.se.","Gustavianum","musik","https://www.uu.se/gustavianum/kalendarium/arkiv/2026-12-06-regina-peregrina"],
 ["2026-12-08","20:00","Swinging Christmas","Universitetets jazzorkester spelar jul i Benny Goodman-anda. 100 kr.","Katalin and all that jazz","musik","https://www.uu.se/uppsala-university-jazz-orchestra/evenemang/arkiv/2026-12-08-swinging-christmas---in-a-clarinettistic-tone"],
 ["2026-12-09","18:30","Jul med Cirkus Cirkör","Julbord med cirkus. Spelas även 10 dec.","Uppsala Konsert & Kongress","kultur","https://stadsevent.se/uppsala/evenemang/uppsala-konsert-och-kongress-restaurangen-sal-d/39969/jul-med-cirkus-cirkör-årets-mest-oväntade-julbord"],
@@ -417,7 +429,7 @@ const K=[
 ["2027-05-20","19:00","Tjajkovskijs pianokonsert: Uppsala Kammarorkester","ukk","Klassiskt","https://ukk.se/tjajkovskijs-pianokonsert-uppsala-kammarorkester/",""],
 ];
 
-const CAT={skapa:"Skapa & prova på",musik:"Musik",dans:"Dans",kultur:"Kultur",aktiv:"Röra på mig",natur:"Natur",mat:"Mat & dryck",lara:"Lära mig nytt",utflykt:"Utflykt"};
+const CAT={marknad:"Marknad",skapa:"Skapa & prova på",musik:"Musik",dans:"Dans",kultur:"Kultur",aktiv:"Röra på mig",natur:"Natur",mat:"Mat & dryck",lara:"Lära mig nytt",utflykt:"Utflykt"};
 const TID=["","En timme eller två","En kväll","Halv- eller heldag"];
 const WD=["sön","mån","tis","ons","tors","fre","lör"], MO=["jan","feb","mars","april","maj","juni","juli","aug","sep","okt","nov","dec"];
 const months=["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
@@ -434,7 +446,7 @@ let done=load("jhp-done",[]), favs=load("jhp-favs",[]);
 function evDate(e){return new Date(e[0]+"T"+(e[1]||"12:00")+":00")}
 function upcoming(){const t0=new Date();t0.setHours(0,0,0,0);return E.filter(e=>evDate(e)>=t0).sort((a,b)=>evDate(a)-evDate(b))}
 function evLabel(e){const d=evDate(e);return WD[d.getDay()]+" "+d.getDate()+" "+MO[d.getMonth()]+(e[1]?" kl "+e[1].replace(":","."):"")}
-function evAsActivity(e){const a=[e[2],e[3],e[5]==="skapa"?"lara":e[5],2];a.ev=e;return a}
+function evAsActivity(e){const a=[e[2],e[3],e[5]==="skapa"?"lara":e[5]==="marknad"?"kultur":e[5],2];a.ev=e;return a}
 function timesDone(t){return done.filter(x=>x.t===t).length}
 
 $("today").textContent=days[now.getDay()]+" "+now.getDate()+" "+months[now.getMonth()];
