@@ -161,7 +161,7 @@ li button{background:none;border:0;color:var(--plum);font:600 13px var(--body);c
     <p class="empty" id="favEmpty">Tryck på hjärtat för att spara ett förslag eller evenemang.</p>
   </section>
 
-  <p class="foot">Förslagen blandar gamla favoriter med sånt du inte testat. Det du redan gjort dyker upp mer sällan.</p>
+  <p class="foot">Förslagen blandar gamla favoriter med sånt du inte testat. Det du redan gjort dyker upp mer sällan.<br><a href="../tallriken/" style="color:var(--plum)">Uppsala på tallriken</a></p>
 </div>
 
 <script>
@@ -489,7 +489,7 @@ function show(a,isExample){
   $("cardEyebrow").textContent=isExample?"Exempel på förslag":a.ev?"Händer "+evLabel(a.ev):"Ditt förslag";
   $("what").textContent=a[0];
   $("why").textContent=a[1];
-  $("more").hidden=!a.ev; if(a.ev) $("more").href=a.ev[6];
+  $("more").hidden=!a.ev&&!a.link; if(a.ev){$("more").href=a.ev[6];$("more").textContent="Läs mer och boka"} else if(a.link){$("more").href=a.link;$("more").textContent="Öppna i Uppsala på tallriken"}
   $("tags").innerHTML="";
   const tags=[[CAT[a[2]],""]];
   if(a.ev) tags.push([a.ev[4],""]); else tags.push([TID[a[3]],""]);
@@ -624,6 +624,14 @@ function renderK(){
 $("moreK").addEventListener("click",()=>{kShowAll=true;renderK()});
 VENUES.forEach(([n,d,u])=>{const li=document.createElement("li");li.innerHTML='<a target="_blank" rel="noopener"></a><span></span>';li.children[0].textContent=n;li.children[0].href=u;li.children[1].textContent=d;$("venues").appendChild(li)});
 renderK();
+
+/* Restaurangtips från Uppsala på tallriken: ställen du inte bockat av där */
+fetch("../tallriken/restauranger.json").then(r=>r.json()).then(d=>{
+  const m=load("upt-v1",{});
+  (d.restauranger||[]).filter(r=>!(m[r.namn]&&m[r.namn].d)).sort(()=>Math.random()-.5).slice(0,5).forEach(r=>{
+    const a=["Ät på "+r.namn,(r.beskrivning?r.beskrivning+" ":"")+r.kok+", "+r.omrade+".","mat",2];a.link="../tallriken/";A.push(a);
+  });
+}).catch(()=>{});
 
 renderEvents();
 render();

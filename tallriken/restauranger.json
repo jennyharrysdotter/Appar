@@ -1,0 +1,621 @@
+{
+ "uppdaterad": "2026-11-21",
+ "restauranger": [
+  {
+   "namn": "Villa Anna",
+   "kok": "Svenskt & nordiskt",
+   "omrade": "Centrum",
+   "pris": 3,
+   "beskrivning": "Prisad nordisk krog i ett 1870-talshus nära domkyrkan, med lokala och ofta ekologiska råvaror.",
+   "adress": "Odinslund 3"
+  },
+  {
+   "namn": "Klostergatan 5",
+   "kok": "Svenskt & nordiskt",
+   "omrade": "Centrum",
+   "pris": 3,
+   "beskrivning": "Familjen Trillers bistro med svenska gårdsostar och en vinlista som hela tiden förnyas.",
+   "adress": "Klostergatan 5A"
+  },
+  {
+   "namn": "Dryck & Mat",
+   "kok": "Svenskt & nordiskt",
+   "omrade": "Centrum",
+   "pris": 3,
+   "beskrivning": "Dold pärla i gamla stationshuset där menyn byggs kring dryckerna, med stor alkoholfri lista.",
+   "adress": "Olof Palmes plats 2"
+  },
+  {
+   "namn": "Restaurang Sverre",
+   "kok": "Svenskt & nordiskt",
+   "omrade": "Fålhagen",
+   "pris": 3,
+   "beskrivning": "Hållbar skandinavisk krog med säsongsmenyer, à la carte eller kockens meny.",
+   "adress": "Väderkvarnsgatan 24C"
+  },
+  {
+   "namn": "Domtrappkällaren",
+   "kok": "Svenskt & nordiskt",
+   "omrade": "Centrum",
+   "pris": 3,
+   "beskrivning": "Svenska klassiker som toast skagen och älgfärsbiffar i medeltida källarvalv vid domtrappan.",
+   "adress": "S:t Eriks gränd 15"
+  },
+  {
+   "namn": "Peppar Peppar",
+   "kok": "Svenskt & nordiskt",
+   "omrade": "Centrum",
+   "pris": 3,
+   "beskrivning": "Ljus och elegant krog med kött och fisk, flera gånger utsedd till UNT-läsarnas favorit.",
+   "adress": "Suttungs gränd 3"
+  },
+  {
+   "namn": "DUO",
+   "kok": "Svenskt & nordiskt",
+   "omrade": "Fålhagen",
+   "pris": 3,
+   "beskrivning": "Restaurang och cocktailbar med en meny som byts ofta, med både europeiska och asiatiska influenser.",
+   "adress": "Väderkvarnsgatan 26"
+  },
+  {
+   "namn": "Hotel von Kraemer",
+   "kok": "Svenskt & nordiskt",
+   "omrade": "Utanför centrum",
+   "pris": 2,
+   "beskrivning": "Hotellrestaurang på fjärde våningen med nordiska råvaror och utsikt över stan.",
+   "adress": "von Kraemers allé 26"
+  },
+  {
+   "namn": "Krusenberg Herrgård",
+   "kok": "Svenskt & nordiskt",
+   "omrade": "Utanför stan",
+   "pris": 3,
+   "beskrivning": "Historisk herrgård vid Mälaren söder om stan. Boka lunch i förväg, eller stanna över natten.",
+   "adress": "Krusenberg"
+  },
+  {
+   "namn": "Stationen",
+   "kok": "Svenskt & nordiskt",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Kafé, bar och restaurang i det gamla stationshuset, med svenska klassiker och dagens lunch.",
+   "adress": "Olof Palmes plats 6"
+  },
+  {
+   "namn": "Heat Boländerna",
+   "kok": "Svenskt & nordiskt",
+   "omrade": "Boländerna",
+   "pris": 1,
+   "beskrivning": "Stor lunchbuffé med husmanskost till bra pris.",
+   "adress": "Bolandsgatan 13A"
+  },
+  {
+   "namn": "Granhof Restaurang och Bar",
+   "kok": "Internationellt",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Restaurang och bar med internationell meny.",
+   "adress": "Sysslomansgatan 24"
+  },
+  {
+   "namn": "Tullgarn",
+   "kok": "Internationellt",
+   "omrade": "Kungsängen",
+   "pris": 2,
+   "beskrivning": "Restaurang vid ån söder om centrum med internationell meny.",
+   "adress": "Östra Ågatan 95"
+  },
+  {
+   "namn": "Elvira's",
+   "kok": "Internationellt",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Fönsterbord mitt i stan för att titta på folk. Pumparisotton är populär.",
+   "adress": "Drottninggatan 1"
+  },
+  {
+   "namn": "Odinsborg",
+   "kok": "Kafé & bageri",
+   "omrade": "Gamla Uppsala",
+   "pris": 1,
+   "beskrivning": "Anrikt kafé vid högarna med svenska bakverk och mjöd.",
+   "adress": "Ärnavägen 4"
+  },
+  {
+   "namn": "Güntherska",
+   "kok": "Kafé & bageri",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Familjedrivet konditori vid Fyrisån med bakverk och lättare rätter.",
+   "adress": "Östra Ågatan 31"
+  },
+  {
+   "namn": "Hambergs Fisk",
+   "kok": "Fisk & skaldjur",
+   "omrade": "Centrum",
+   "pris": 3,
+   "beskrivning": "Fiskkrog sedan 1982 med ostron, skaldjursplatå och fisksoppa, och en deli för att ta med hem.",
+   "adress": "Fyristorg 8"
+  },
+  {
+   "namn": "Uppströms Fisk & Skaldjur",
+   "kok": "Fisk & skaldjur",
+   "omrade": "Centrum",
+   "pris": 3,
+   "beskrivning": "Elegant fisk- och skaldjursrestaurang med vita kakelväggar som liknar fiskfjäll.",
+   "adress": "S:t Persgatan 35"
+  },
+  {
+   "namn": "Basta",
+   "kok": "Italienskt",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Napolitansk pizza, färsk pasta och aperitivo, med terrass mot domkyrkan.",
+   "adress": "Gamla torget 5"
+  },
+  {
+   "namn": "Aaltos",
+   "kok": "Italienskt",
+   "omrade": "Centrum",
+   "pris": 3,
+   "beskrivning": "Italiensk grill och trädgård i ett hus ritat av Alvar Aalto. Spara plats till efterrätten.",
+   "adress": "Sysslomansgatan 14"
+  },
+  {
+   "namn": "Ristorante Villa Romana",
+   "kok": "Italienskt",
+   "omrade": "Centrum",
+   "pris": 3,
+   "beskrivning": "Vedugnspizza, hemgjord pasta och egen glass vid ån med utsikt mot domkyrkan.",
+   "adress": "Gamla torget 4"
+  },
+  {
+   "namn": "Il Gradino",
+   "kok": "Italienskt",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Pizza och italienska rätter med stor uteservering på sommaren.",
+   "adress": "Torkelsgatan 9"
+  },
+  {
+   "namn": "Brezza",
+   "kok": "Italienskt",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Restaurang och enoteca med vedugnspizza, hemgjord pasta och stor vinkällare.",
+   "adress": "Skolgatan 31"
+  },
+  {
+   "namn": "Il Forno Italiano",
+   "kok": "Italienskt",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Toskansk trattoria sedan 2003 med vedugnspizza, färsk pasta och vinprovningar.",
+   "adress": "S:t Olofsgatan 8"
+  },
+  {
+   "namn": "Basilico",
+   "kok": "Italienskt",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Pizza och pasta mitt emot Linnéträdgården.",
+   "adress": "Svartbäcksgatan 24"
+  },
+  {
+   "namn": "Toni Macaroni",
+   "kok": "Italienskt",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Italiensk restaurang med pasta och pizza.",
+   "adress": "Gröna gatan 5"
+  },
+  {
+   "namn": "La Girafe",
+   "kok": "Franskt",
+   "omrade": "Centrum",
+   "pris": 3,
+   "beskrivning": "Fransk bistro med internationella influenser i gamla bankhuset på Stora torget.",
+   "adress": "Stora torget 7"
+  },
+  {
+   "namn": "La Ruelle",
+   "kok": "Franskt",
+   "omrade": "Centrum",
+   "pris": 3,
+   "beskrivning": "Liten naturvinsbar med rustika franska smårätter. Det finns ett kockbord för en.",
+   "adress": "Bredgränd 4"
+  },
+  {
+   "namn": "Bistro Estelle",
+   "kok": "Franskt",
+   "omrade": "Luthagen",
+   "pris": 2,
+   "beskrivning": "Fransk bistro i kvarteret.",
+   "adress": "Anundsgatan 25"
+  },
+  {
+   "namn": "Crêperie Bamå",
+   "kok": "Franskt",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Franska galetter och söta crêpes.",
+   "adress": "Sysslomansgatan 11E"
+  },
+  {
+   "namn": "Crêperie Avli",
+   "kok": "Franskt",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Galetter och crêpes på en mysig innergård.",
+   "adress": "Svartbäcksgatan 19"
+  },
+  {
+   "namn": "Miss Voon",
+   "kok": "Asiatiskt",
+   "omrade": "Centrum",
+   "pris": 3,
+   "beskrivning": "Asiatiska smårätter och cocktails på elfte våningen med stadens högsta utsikt. Prova hummertacon.",
+   "adress": "Suttungs gränd 6"
+  },
+  {
+   "namn": "Jay Fu's",
+   "kok": "Asiatiskt",
+   "omrade": "Centrum",
+   "pris": 3,
+   "beskrivning": "Amerikansk grill möter asiatiska smaker ovanför Saluhallen, med utsikt över ån.",
+   "adress": "S:t Eriks torg 8"
+  },
+  {
+   "namn": "Sushi Fu",
+   "kok": "Japanskt & sushi",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Fusionsushi i Saluhallen. Räkna med kö vid lunch.",
+   "adress": "S:t Eriks torg 8"
+  },
+  {
+   "namn": "Ayakos Sushi",
+   "kok": "Japanskt & sushi",
+   "omrade": "Luthagen",
+   "pris": 1,
+   "beskrivning": "Populär sushi där du bygger din egen tallrik. Kvällstid finns även teppanyaki.",
+   "adress": "Geijersgatan 14"
+  },
+  {
+   "namn": "Aspa Sushi",
+   "kok": "Japanskt & sushi",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Enkel och prisvärd sushi.",
+   "adress": "Sysslomansgatan 13"
+  },
+  {
+   "namn": "Lulu",
+   "kok": "Japanskt & sushi",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Japansk restaurang på gågatan.",
+   "adress": "Smedsgränd 8"
+  },
+  {
+   "namn": "Yukikos Sushi",
+   "kok": "Japanskt & sushi",
+   "omrade": "Eriksberg",
+   "pris": 2,
+   "beskrivning": "Sushi och dumplings, även omakase.",
+   "adress": "Norbyvägen 65"
+  },
+  {
+   "namn": "The Melody Club",
+   "kok": "Japanskt & sushi",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Japanska smårätter att dela och egna karaokerum.",
+   "adress": "Dragarbrunnsgatan 18"
+  },
+  {
+   "namn": "GinnDee Sushi & Wok",
+   "kok": "Thailändskt",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Thai och sushi med sommarterrass vid Fyrisån.",
+   "adress": "Skolgatan 39"
+  },
+  {
+   "namn": "Koh Phangan",
+   "kok": "Thailändskt",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Thaimat i en miljö som ska kännas som en kväll på en strand i Thailand.",
+   "adress": "Fyristorg 2"
+  },
+  {
+   "namn": "Amazing Thai",
+   "kok": "Thailändskt",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Stor thaibuffé med sushi.",
+   "adress": "Dragarbrunnsgatan 48"
+  },
+  {
+   "namn": "Golden China & Aikins Sushi",
+   "kok": "Kinesiskt",
+   "omrade": "Kungsängen",
+   "pris": 2,
+   "beskrivning": "Sichuanrätter och hotpot.",
+   "adress": "Kungsängsgatan 23"
+  },
+  {
+   "namn": "PONG",
+   "kok": "Asiatiskt",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Asiatisk buffé med sushi, wok och nudlar.",
+   "adress": "Storgatan 27"
+  },
+  {
+   "namn": "Ahaan Fusion",
+   "kok": "Asiatiskt",
+   "omrade": "Fålhagen",
+   "pris": 1,
+   "beskrivning": "Asiatisk fusionsmat.",
+   "adress": "Hjalmar Brantingsgatan 23"
+  },
+  {
+   "namn": "Indian Kitchen",
+   "kok": "Indiskt",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Nordindiskt kök. Tikka masalan är en favorit, och det finns avhämtning.",
+   "adress": "Kungsgatan 25"
+  },
+  {
+   "namn": "Hodja",
+   "kok": "Mellanöstern & meze",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Turkisk och libanesisk meze i tre färgstarka rum. Beställ många små rätter.",
+   "adress": "Sysslomansgatan 13A"
+  },
+  {
+   "namn": "Meza",
+   "kok": "Mellanöstern & meze",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Libanesisk meze vid ån bland sammetssoffor och färgglada mönster.",
+   "adress": "Östra Ågatan 11"
+  },
+  {
+   "namn": "Byblos Kök & Bar",
+   "kok": "Mellanöstern & meze",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Libanesiskt kök och bar.",
+   "adress": "Vaksalagatan 24"
+  },
+  {
+   "namn": "Sofreh",
+   "kok": "Mellanöstern & meze",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Persisk hemlagad mat med grytor och kolgrillad kebab.",
+   "adress": "Skomakargatan 16"
+  },
+  {
+   "namn": "Tzatziki",
+   "kok": "Grekiskt",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Grekisk restaurang vid Fyrisån.",
+   "adress": "Fyristorg 4"
+  },
+  {
+   "namn": "Iberico Tapas & Bar",
+   "kok": "Spanskt & tapas",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Tapas och spanska viner vid ån. Vegetariska rätter är tydligt märkta.",
+   "adress": "Fyristorg 8"
+  },
+  {
+   "namn": "Plock",
+   "kok": "Spanskt & tapas",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Tapas med svenska och internationella smaker och en mysig bar.",
+   "adress": "Dragarbrunnsgatan 24"
+  },
+  {
+   "namn": "Restaurang Che",
+   "kok": "Latinamerikanskt",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Kubansk restaurang vid Saluhallen.",
+   "adress": "S:t Eriks torg 4"
+  },
+  {
+   "namn": "Tapicante",
+   "kok": "Latinamerikanskt",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Liten tacobar som började som foodtruck, med många vegetariska fyllningar.",
+   "adress": "Drottninggatan 8"
+  },
+  {
+   "namn": "Lilly's Bar",
+   "kok": "Latinamerikanskt",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Mexikansk mat och bar.",
+   "adress": "Sysslomansgatan 15B"
+  },
+  {
+   "namn": "Messob",
+   "kok": "Afrikanskt",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Familjedriven etiopisk och eritreansk restaurang med injera och många vegetariska rätter.",
+   "adress": "Sturegatan 4A"
+  },
+  {
+   "namn": "Fröjas Sal",
+   "kok": "Vegetariskt & veganskt",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Vegansk restaurang nära centralen sedan över 15 år, med injera och kryddiga grytor.",
+   "adress": "Bäverns gränd 24"
+  },
+  {
+   "namn": "Queen Beans",
+   "kok": "Vegetariskt & veganskt",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Litet veganskt kafé med grytor, wraps och hembakat.",
+   "adress": "Svartbäcksgatan 19"
+  },
+  {
+   "namn": "Holy Greens",
+   "kok": "Vegetariskt & veganskt",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Sallader och bowls med säsongens grönsaker från svenska odlare.",
+   "adress": "Smedsgränd 5"
+  },
+  {
+   "namn": "Hey Lucie!",
+   "kok": "Vegetariskt & veganskt",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Glutenfritt och växtbaserat kafé med smoothiebowls, lunch och raw desserter.",
+   "adress": "Dragarbrunnsgatan 75"
+  },
+  {
+   "namn": "Jorden är blå som en apelsin",
+   "kok": "Kafé & bageri",
+   "omrade": "Kungsängen",
+   "pris": 1,
+   "beskrivning": "Frukost hela dagen, mest vegetariskt.",
+   "adress": "Kungsängsesplanaden 2A"
+  },
+  {
+   "namn": "Tugg Burgers",
+   "kok": "Amerikanskt & burgare",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Burgare med kött, vegetariskt eller veganskt. Pommes och kaffe ingår i lunchen.",
+   "adress": "Dragarbrunnsgatan 50A"
+  },
+  {
+   "namn": "Bastard Burgers",
+   "kok": "Amerikanskt & burgare",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Burgarkedja där hela menyn går att få växtbaserad.",
+   "adress": "Dragarbrunnsgatan 43A"
+  },
+  {
+   "namn": "Brödernas",
+   "kok": "Amerikanskt & burgare",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Burgare, pommes och shakes.",
+   "adress": "S:t Persgatan 12"
+  },
+  {
+   "namn": "Kaliber Bar",
+   "kok": "Amerikanskt & burgare",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Amerikansk bar och restaurang.",
+   "adress": "Drottninggatan 12"
+  },
+  {
+   "namn": "Kaliber Room",
+   "kok": "Internationellt",
+   "omrade": "Centrum",
+   "pris": 1,
+   "beskrivning": "Restaurang och scen med livemusik.",
+   "adress": "Storgatan 27"
+  },
+  {
+   "namn": "Lucy's Bar & Restaurant",
+   "kok": "Amerikanskt & burgare",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Amerikansk bar och restaurang.",
+   "adress": "S:t Persgatan 13"
+  },
+  {
+   "namn": "Pitchers",
+   "kok": "Amerikanskt & burgare",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Sportbar med amerikansk mat.",
+   "adress": "Påvel Snickares gränd 1"
+  },
+  {
+   "namn": "Flustret",
+   "kok": "Amerikanskt & burgare",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Burgare i en paviljong från 1842 vid ån, som också har klubbar och evenemang.",
+   "adress": "Flustergränd 5"
+  },
+  {
+   "namn": "O'Connor's",
+   "kok": "Pub & bar",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Irländsk pub vid Stora torget med fish and chips och vikingadekor.",
+   "adress": "Stora torget 1"
+  },
+  {
+   "namn": "O'Neill's",
+   "kok": "Pub & bar",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Irländsk pub med pubmat och hantverksöl.",
+   "adress": "Dragarbrunnsgatan 53"
+  },
+  {
+   "namn": "The Bishops Arms",
+   "kok": "Pub & bar",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Engelsk pub med stort ölutbud.",
+   "adress": "Bäverns gränd 17"
+  },
+  {
+   "namn": "German Beer Hall",
+   "kok": "Pub & bar",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Tysk ölkultur med bratwurst, pretzels och surkål.",
+   "adress": "Stora torget 10"
+  },
+  {
+   "namn": "Bierhuis",
+   "kok": "Pub & bar",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Belgisk ölhall med hantverksöl, pommes och våfflor.",
+   "adress": "S:t Olofsgatan 23"
+  },
+  {
+   "namn": "Taps Beer Bar",
+   "kok": "Pub & bar",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Modern pub med lokala hantverksöl och en liten meny med bra veganska alternativ.",
+   "adress": "Drottninggatan 8"
+  },
+  {
+   "namn": "Interpool",
+   "kok": "Pub & bar",
+   "omrade": "Centrum",
+   "pris": 2,
+   "beskrivning": "Brasserie och sportbar där du också kan spela pingis, dart, biljard och shuffleboard.",
+   "adress": "Uppsala centrum"
+  }
+ ]
+}

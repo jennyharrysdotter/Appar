@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Uppsala på tallriken</title>
+<meta name="theme-color" content="#2F5E4A">
+<meta name="description" content="Uppsalas restauranger att bocka av, med kök, område och egna betyg.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a menu card in a pocket. One column; the plate-ring counter is the hero, the list is the menu. */
+:root{
+  --bg:#EEF1EC; --surface:#FFFFFF; --ink:#1F2A24; --muted:#5B6A61; --line:#D6DDD6;
+  --herb:#2F5E4A; --herb-soft:#E1EBE4; --chili:#C8412C; --butter:#F2C14E; --butter-ink:#2D2005;
+  --display:"DM Serif Display", Georgia, "Times New Roman", serif;
+  --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121815; --surface:#1B231F; --ink:#E9EFEA; --muted:#A1B0A7; --line:#2C3832;
+  --herb:#8CC5A8; --herb-soft:#213029; --chili:#EE7058; --butter:#F5CD6A; --butter-ink:#2D2005; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121815; --surface:#1B231F; --ink:#E9EFEA; --muted:#A1B0A7; --line:#2C3832;
+  --herb:#8CC5A8; --herb-soft:#213029; --chili:#EE7058; --butter:#F5CD6A; --butter-ink:#2D2005; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:580px;margin:0 auto;padding-block:26px 56px;display:flex;flex-direction:column;gap:20px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,10vw,46px);line-height:1;margin:4px 0 0;text-wrap:balance}
+h1 em{font-style:italic;color:var(--chili)}
+h2{font-family:var(--display);font-weight:400;font-size:22px;margin:0}
+.hero{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px}
+.plate{width:92px;height:92px}
+.plate .track{fill:none;stroke:var(--herb-soft);stroke-width:10}
+.plate .bar{fill:none;stroke:var(--herb);stroke-width:10;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .5s}
+.plate text{font-family:var(--display);fill:var(--ink)}
+.hero p{margin:0}
+.hero .big{font-family:var(--display);font-size:22px;line-height:1.15}
+.hero .small{color:var(--muted);font-size:14px}
+.go{border:0;background:var(--chili);color:#fff;font:700 18px var(--body);padding:16px;border-radius:14px;cursor:pointer}
+.go:active{transform:translateY(1px)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--butter);outline-offset:2px}
+.pick{background:var(--herb-soft);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.pick h3{font-family:var(--display);font-weight:400;font-size:24px;margin:0}
+.pick p{margin:0}
+.search{width:100%;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:12px 14px;font:500 16px var(--body)}
+.filters{display:flex;flex-direction:column;gap:10px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;font:500 14px var(--body);cursor:pointer;white-space:nowrap}
+.chips button[aria-pressed="true"]{background:var(--herb);border-color:var(--herb);color:var(--surface);font-weight:600}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row select{flex:1 1 140px;min-width:0;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:9px 10px;font:500 14px var(--body)}
+.count{color:var(--muted);font-size:14px;margin:0}
+.list{display:flex;flex-direction:column;gap:10px;list-style:none;margin:0;padding:0}
+.r{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:6px}
+.r.been{border-color:color-mix(in srgb,var(--herb) 45%,var(--line))}
+.r .top{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.r h3{font-family:var(--display);font-weight:400;font-size:21px;line-height:1.15;margin:0;min-width:0}
+.r .meta{font-size:13.5px;color:var(--muted);margin:0}
+.r .meta b{color:var(--herb);font-weight:600}
+.r .desc{margin:0;font-size:15px}
+.r .links{display:flex;gap:14px;flex-wrap:wrap;font-size:14px}
+.r .links a{color:var(--herb);font-weight:600;text-underline-offset:3px}
+.tick{flex:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 11px;font:600 13px var(--body);cursor:pointer;white-space:nowrap}
+.tick[aria-pressed="true"]{background:var(--herb);border-color:var(--herb);color:var(--surface)}
+.mine{display:flex;flex-direction:column;gap:8px;border-top:1px dashed var(--line);padding-top:8px;margin-top:2px}
+.stars{display:flex;gap:2px;align-items:center}
+.stars span{font-size:13px;color:var(--muted);margin-right:6px}
+.stars button{background:none;border:0;padding:2px;font-size:22px;line-height:1;color:var(--line);cursor:pointer}
+.stars button.on{color:var(--butter)}
+.mine textarea{width:100%;min-height:44px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:8px 10px;font:400 14.5px var(--body);resize:vertical}
+.mine .when{font-size:13px;color:var(--muted)}
+.price{letter-spacing:.05em}
+.empty{color:var(--muted);margin:0}
+details.add{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+details.add summary{cursor:pointer;font-weight:600;color:var(--herb)}
+.add form{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.add input,.add select{border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:10px;font:500 15px var(--body);min-width:0}
+.add button{align-self:flex-start;border:0;background:var(--herb);color:var(--surface);font:600 15px var(--body);padding:10px 16px;border-radius:10px;cursor:pointer}
+.install{border:1.5px solid var(--herb);background:var(--surface);color:var(--herb);font:600 15px var(--body);padding:12px;border-radius:12px;cursor:pointer}
+.foot{font-size:13px;color:var(--muted);text-align:center;margin:8px 0 0}
+.foot a{color:var(--herb)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Uppsalas restauranger att bocka av</p>
+    <h1>Uppsala på <em>tallriken</em></h1>
+  </header>
+
+  <section class="hero" aria-label="Din tallrik">
+    <svg class="plate" viewBox="0 0 100 100" aria-hidden="true">
+      <circle class="track" cx="50" cy="50" r="42"/>
+      <circle class="bar" id="ring" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+      <text x="50" y="58" text-anchor="middle" font-size="26" id="ringNum">0</text>
+    </svg>
+    <div>
+      <p class="big" id="heroBig">Du har ätit på 0 ställen</p>
+      <p class="small" id="heroSmall">av 0 restauranger i listan</p>
+    </div>
+  </section>
+
+  <button class="go" id="go" type="button">Slumpa en jag inte testat</button>
+  <section class="pick" id="pick" hidden aria-live="polite"></section>
+  <button class="install" id="install" type="button" hidden>Lägg appen på hemskärmen</button>
+
+  <section class="filters" aria-label="Filter">
+    <input class="search" id="q" type="search" placeholder="Sök restaurang, kök eller gata" aria-label="Sök">
+    <div class="chips" id="kok" role="group" aria-label="Kök"></div>
+    <div class="row">
+      <select id="omrade" aria-label="Område"></select>
+      <select id="pris" aria-label="Pris">
+        <option value="">Alla prisnivåer</option><option value="1">Billigt (kr)</option><option value="2">Mellan (kr kr)</option><option value="3">Lyxigt (kr kr kr)</option>
+      </select>
+      <select id="status" aria-label="Status">
+        <option value="">Alla</option><option value="nej">Inte testat än</option><option value="ja">Varit där</option>
+      </select>
+    </div>
+    <p class="count" id="count"></p>
+  </section>
+
+  <ul class="list" id="list"></ul>
+  <p class="empty" id="empty" hidden>Inga restauranger matchar. Prova att ta bort ett filter.</p>
+
+  <details class="add">
+    <summary>Saknas ett ställe? Lägg till det själv</summary>
+    <form id="addForm">
+      <input id="aNamn" placeholder="Namn" required>
+      <select id="aKok" aria-label="Kök"></select>
+      <input id="aOmr" placeholder="Område eller adress">
+      <button type="submit">Lägg till</button>
+    </form>
+  </details>
+
+  <p class="foot">Dina bockar, betyg och anteckningar sparas bara i din egen telefon. Listan uppdateras med jämna mellanrum.<br><a href="../hitt-pa/">Vad ska jag hitt på?</a></p>
+</div>
+
+<script>
+const PRIS=["","kr","kr kr","kr kr kr"];
+const KEY="upt-v1", OWN="upt-egna";
+const $=id=>document.getElementById(id);
+function load(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+let mine=load(KEY,{}), own=load(OWN,[]), R=[], kok="";
+const months=["jan","feb","mars","april","maj","juni","juli","aug","sep","okt","nov","dec"];
+function all(){return R.concat(own.map(o=>({...o,egen:true})))}
+function been(n){return !!(mine[n]&&mine[n].d)}
+
+function updateHero(){
+  const list=all(), n=list.filter(r=>been(r.namn)).length, tot=list.length;
+  $("ringNum").textContent=n;
+  $("ring").setAttribute("stroke-dashoffset",(263.9*(1-(tot?n/tot:0))).toFixed(1));
+  $("heroBig").textContent=n===0?"Dags att börja äta dig igenom stan":n===1?"Du har ätit på 1 ställe":"Du har ätit på "+n+" ställen";
+  $("heroSmall").textContent="av "+tot+" restauranger i listan";
+}
+
+function buildFilters(){
+  const koks=[...new Set(all().map(r=>r.kok))].sort((a,b)=>a.localeCompare(b,"sv"));
+  $("kok").innerHTML="";
+  [["","Alla kök"]].concat(koks.map(k=>[k,k])).forEach(([v,l])=>{
+    const b=document.createElement("button");b.type="button";b.textContent=l;b.setAttribute("aria-pressed",v===kok);
+    b.addEventListener("click",()=>{kok=v;[...$("kok").children].forEach(x=>x.setAttribute("aria-pressed",x===b));render()});
+    $("kok").appendChild(b);
+  });
+  const omr=[...new Set(all().map(r=>r.omrade))].sort((a,b)=>a.localeCompare(b,"sv"));
+  const cur=$("omrade").value;
+  $("omrade").innerHTML='<option value="">Alla områden</option>'+omr.map(o=>'<option></option>').join("");
+  [...$("omrade").options].slice(1).forEach((o,i)=>{o.value=omr[i];o.textContent=omr[i]});
+  $("omrade").value=cur;
+  $("aKok").innerHTML="";koks.forEach(k=>{const o=document.createElement("option");o.textContent=k;$("aKok").appendChild(o)});
+}
+
+function filtered(){
+  const q=$("q").value.trim().toLowerCase(), o=$("omrade").value, p=$("pris").value, s=$("status").value;
+  return all().filter(r=>(!kok||r.kok===kok)&&(!o||r.omrade===o)&&(!p||String(r.pris)===p)
+    &&(!s||(s==="ja")===been(r.namn))
+    &&(!q||(r.namn+" "+r.kok+" "+(r.adress||"")+" "+r.omrade+" "+(r.beskrivning||"")).toLowerCase().includes(q)))
+    .sort((a,b)=>a.namn.localeCompare(b.namn,"sv"));
+}
+
+function mapsUrl(r){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(r.namn+" "+(r.adress||"")+" Uppsala")}
+
+function card(r){
+  const li=document.createElement("li"); li.className="r"+(been(r.namn)?" been":"");
+  const m=mine[r.namn]||{};
+  li.innerHTML='<div class="top"><h3></h3><button class="tick" type="button"></button></div><p class="meta"></p><p class="desc"></p><div class="links"><a target="_blank" rel="noopener">Visa på kartan</a></div>';
+  li.querySelector("h3").textContent=r.namn;
+  const meta=li.querySelector(".meta");
+  const b=document.createElement("b");b.textContent=r.kok;meta.appendChild(b);
+  meta.append(" · "+r.omrade+(r.pris?" · ":""));
+  if(r.pris){const s=document.createElement("span");s.className="price";s.textContent=PRIS[r.pris];meta.appendChild(s)}
+  if(r.egen) meta.append(" · tillagd av dig");
+  const d=li.querySelector(".desc"); if(r.beskrivning) d.textContent=r.beskrivning; else d.remove();
+  li.querySelector("a").href=mapsUrl(r);
+  const t=li.querySelector(".tick");
+  t.setAttribute("aria-pressed",been(r.namn)); t.textContent=been(r.namn)?"✓ Varit här":"Varit här?";
+  t.addEventListener("click",()=>{
+    if(been(r.namn)){mine[r.namn]={...m,d:null}} else {const n=new Date();mine[r.namn]={...m,d:n.getDate()+" "+months[n.getMonth()]+" "+n.getFullYear()}}
+    save(KEY,mine); li.replaceWith(card(r)); updateHero(); updateCount();
+  });
+  if(been(r.namn)){
+    const box=document.createElement("div");box.className="mine";
+    box.innerHTML='<div class="stars"><span>Mitt betyg</span></div><span class="when"></span><textarea placeholder="Vad åt du? Vad vill du testa nästa gång?" aria-label="Anteckning"></textarea>';
+    box.querySelector(".when").textContent="Var här "+m.d;
+    const st=box.querySelector(".stars");
+    for(let i=1;i<=5;i++){const sb=document.createElement("button");sb.type="button";sb.textContent="★";sb.setAttribute("aria-label",i+" av 5");if((m.r||0)>=i)sb.className="on";
+      sb.addEventListener("click",()=>{mine[r.namn].r=(mine[r.namn].r===i?0:i);save(KEY,mine);[...st.querySelectorAll("button")].forEach((x,j)=>x.className=(mine[r.namn].r>j?"on":""))});st.appendChild(sb)}
+    const ta=box.querySelector("textarea");ta.value=m.n||"";
+    ta.addEventListener("input",()=>{mine[r.namn].n=ta.value;save(KEY,mine)});
+    li.appendChild(box);
+  }
+  return li;
+}
+
+function updateCount(){const n=filtered().length;$("count").textContent=n+(n===1?" restaurang":" restauranger")}
+function render(){
+  const list=filtered(); $("list").innerHTML="";
+  list.forEach(r=>$("list").appendChild(card(r)));
+  $("empty").hidden=list.length>0; updateCount();
+}
+
+$("go").addEventListener("click",()=>{
+  let pool=filtered().filter(r=>!been(r.namn));
+  if(!pool.length) pool=all().filter(r=>!been(r.namn));
+  const p=$("pick"); p.hidden=false; p.innerHTML="";
+  if(!pool.length){p.innerHTML='<p>Du har ätit på alla ställen i listan. Imponerande! Lägg till fler längst ner.</p>';return}
+  const r=pool[Math.floor(Math.random()*pool.length)];
+  p.innerHTML='<p class="eyebrow">Testa den här</p><h3></h3><p class="meta"></p><p></p><a target="_blank" rel="noopener" style="color:var(--herb);font-weight:600">Visa på kartan</a>';
+  p.querySelector("h3").textContent=r.namn;
+  p.querySelector(".meta").textContent=r.kok+" · "+r.omrade+(r.pris?" · "+PRIS[r.pris]:"");
+  p.querySelectorAll("p")[2].textContent=r.beskrivning||"";
+  p.querySelector("a").href=mapsUrl(r);
+});
+
+["q","omrade","pris","status"].forEach(id=>$(id).addEventListener(id==="q"?"input":"change",render));
+
+$("addForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const namn=$("aNamn").value.trim(); if(!namn) return;
+  own.push({namn,kok:$("aKok").value,omrade:$("aOmr").value.trim()||"Uppsala",pris:0,beskrivning:"",adress:$("aOmr").value.trim()});
+  save(OWN,own); $("aNamn").value="";$("aOmr").value="";
+  buildFilters(); render(); updateHero();
+});
+
+fetch("restauranger.json",{cache:"no-cache"}).then(r=>r.json()).then(d=>{R=d.restauranger||[]}).catch(()=>{R=[]}).finally(()=>{buildFilters();render();updateHero()});
+
+let deferred;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e;$("install").hidden=false});
+$("install").addEventListener("click",async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice;deferred=null;$("install").hidden=true});
+window.addEventListener("appinstalled",()=>{$("install").hidden=true});
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
+</script>
+</body>
+</html>
