@@ -185,7 +185,7 @@ function viewInstall() {
 
 function viewInfo() {
   return viewInstall() + `<div class="card"><h2>${t('aboutTitle')}</h2>
-      ${['about1', 'about2', 'about3', 'about4'].map(k => `<p class="muted">${t(k)}</p>`).join('')}</div>
+      ${['about1', 'about2', 'aboutPath', 'about3', 'about4'].map(k => `<p class="muted">${t(k)}</p>`).join('')}</div>
     <div class="card"><h2>${t('dataTitle')}</h2><p class="muted">${t('dataBody')}</p>
       <p class="small">${esc(R.COMMUNITY_LABEL)}</p></div>
     <div class="card"><button class="btn danger" data-act="reset" style="width:100%">${t('resetData')}</button></div>
