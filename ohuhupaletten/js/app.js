@@ -13,6 +13,8 @@ const FAR = 10; // ΔE över detta = "ingen nära penna"
 
 const BLEND_KEY = 'obl.blend.v1';
 const PAL_KEY = 'obl.palette.v1';
+const TIP_KEY = 'obl.tip.palette';
+const tipSeen = () => { try { return localStorage.getItem(TIP_KEY) === '1'; } catch { return false; } };
 const P = { type: 'random', mood: 'all', theme: 'spring', dir: 'any', count: 4, anchor: null, locks: [], result: null };
 try { Object.assign(P, JSON.parse(localStorage.getItem(PAL_KEY)) || {}); } catch {}
 const savePal = () => { try { localStorage.setItem(PAL_KEY, JSON.stringify(P)); } catch {} };
@@ -225,6 +227,9 @@ function viewPalette() {
   if (res.length) {
     html += `<div class="card"><h2 style="margin:0 0 10px;display:flex;align-items:center;gap:8px">${t('palResult')} ${info('pshadow')}</h2>
       <div class="band">${res.map(b => `<div style="background:${b.pen.hex}"></div>`).join('')}</div>
+      ${tipSeen() ? '' : `<div class="tip"><b>${t('tipTitle')}</b>
+        <ul><li>🔒 ${t('tipLock')}</li><li>🎲 ${t('tipOne')}</li><li>👆 ${t('tipTap')}</li></ul>
+        <button class="btn primary" data-act="tipOk">${t('tipOk')}</button></div>`}
       <ul class="steplist">${res.map(b => {
         const locked = P.locks.includes(b.pen.code);
         return `<li class="palrow">
@@ -511,6 +516,7 @@ document.addEventListener('click', async e => {
   if (a === 'pTheme') { P.theme = el.dataset.v; P.locks = []; rollPalette(); render(); }
   if (a === 'pMood') { P.mood = el.dataset.v; P.locks = []; rollPalette(); render(); }
   if (a === 'pCount') { P.count = Math.min(5, Math.max(3, P.count + Number(el.dataset.d))); P.locks = P.locks.slice(0, P.count); rollPalette(); render(); }
+  if (a === 'tipOk') { try { localStorage.setItem(TIP_KEY, '1'); } catch {} render(); }
   if (a === 'pRoll') { rollPalette(); render(); }
   if (a === 'pOne') { replaceOne(Number(el.dataset.i)); render(); }
   if (a === 'pAlt') openPalAlternatives(Number(el.dataset.i));

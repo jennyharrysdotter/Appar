@@ -218,3 +218,8 @@ dialog#sheet::backdrop { background: rgba(30, 25, 20, .35); }
 .pentap { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; border: 0; background: none; padding: 0; text-align: left; }
 .palrow .stepitem { gap: 8px; }
 .palrow .shadows { margin-left: 92px; }
+
+.tip { background: #f1f6ff; border-radius: 16px; padding: 14px 16px; margin: 12px 0 4px; font-size: 14.5px; color: #26406b; }
+.tip ul { list-style: none; padding: 0; margin: 8px 0 12px; }
+.tip li { margin: 6px 0; }
+.tip .btn { padding: 9px 16px; font-size: 14px; }
