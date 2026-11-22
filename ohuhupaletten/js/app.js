@@ -12,10 +12,12 @@ const FAR = 10; // ΔE över detta = "ingen nära penna"
 
 const BLEND_KEY = 'obl.blend.v1';
 const PAL_KEY = 'obl.palette.v1';
-const P = { type: 'random', mood: 'all', count: 4, anchor: null, locks: [], result: null };
+const P = { type: 'random', mood: 'all', theme: 'spring', count: 4, anchor: null, locks: [], result: null };
 try { Object.assign(P, JSON.parse(localStorage.getItem(PAL_KEY)) || {}); } catch {}
 const savePal = () => { try { localStorage.setItem(PAL_KEY, JSON.stringify(P)); } catch {} };
-const PTYPES = ['random', 'mono', 'analog', 'complement', 'triad'];
+const PTYPES = ['random', 'mono', 'analog', 'complement', 'triad', 'theme'];
+const SEASONS = ['spring', 'summer', 'autumn', 'winter'];
+const HOLIDAYS = ['christmas', 'easter', 'midsummer', 'halloween', 'valentine', 'newyear'];
 const PMOODS = ['all', 'vivid', 'muted', 'pastel', 'dark', 'earthy', 'grey'];
 const APP_URL = 'https://jennyharrysdotter.github.io/Appar/ohuhupaletten/';
 let installPrompt = null;
@@ -140,7 +142,7 @@ function rollPalette() {
   if (!pens.length) return;
   const locks = P.locks.map(c => R.getPen(c)).filter(p => p?.lab);
   const anchor = P.anchor ? R.getPen(P.anchor) : null;
-  const r = generatePalette({ pens, type: P.type, mood: P.mood, count: P.count, anchor: anchor?.lab ? anchor : null, locks });
+  const r = generatePalette({ pens, type: P.type, mood: P.type === 'theme' ? (P.theme || 'spring') : P.mood, count: P.count, anchor: anchor?.lab ? anchor : null, locks });
   P.result = r.bases.map(b => ({ code: b.pen.code, shadows: b.shadows.map(x => x.code) }));
   savePal();
 }
@@ -153,14 +155,19 @@ function viewPalette() {
       <div class="label" style="display:flex;align-items:center;gap:8px">${t('palType')} ${info('ptype')}</div>
       <div class="chips wrap" style="padding-top:2px">${PTYPES.map(k => `<button data-act="pType" data-v="${k}" class="${P.type === k ? 'on' : ''}">${t('pt_' + k)}</button>`).join('')}</div>
       <p class="small" style="margin:4px 2px 12px">${t('pth_' + P.type)}</p>
+      ${P.type === 'theme' ? `
+      <div class="label">${t('palSeasons')}</div>
+      <div class="chips wrap" style="padding-top:2px">${SEASONS.map(k => `<button data-act="pTheme" data-v="${k}" class="${P.theme === k ? 'on' : ''}">${t('th_' + k)}</button>`).join('')}</div>
+      <div class="label" style="margin-top:10px">${t('palHolidays')}</div>
+      <div class="chips wrap" style="padding-top:2px">${HOLIDAYS.map(k => `<button data-act="pTheme" data-v="${k}" class="${P.theme === k ? 'on' : ''}">${t('th_' + k)}</button>`).join('')}</div>` : `
       <div class="label">${t('palMood')}</div>
-      <div class="chips wrap" style="padding-top:2px">${PMOODS.map(k => `<button data-act="pMood" data-v="${k}" class="${P.mood === k ? 'on' : ''}">${t('pm_' + k)}</button>`).join('')}</div>
+      <div class="chips wrap" style="padding-top:2px">${PMOODS.map(k => `<button data-act="pMood" data-v="${k}" class="${P.mood === k ? 'on' : ''}">${t('pm_' + k)}</button>`).join('')}</div>`}
       <div class="ctrl" style="margin:14px 0"><div class="label" style="margin:0">${t('palCount')}</div>
         <div class="stepper"><button data-act="pCount" data-d="-1" aria-label="Färre">−</button><span>${P.count}</span><button data-act="pCount" data-d="1" aria-label="Fler">+</button></div></div>
-      <div class="label">${t('palAnchor')}</div>
+      ${P.type === 'theme' ? '' : `<div class="label">${t('palAnchor')}</div>
       <div class="row">
         <button class="btn grow anchorbtn" data-act="pAnchor">${anc ? `<i style="background:${anc.hex}"></i><b>${esc(anc.code)}</b>` : t('palAnchorNone')}</button>
-        ${anc ? `<button class="btn" data-act="pAnchorClear" aria-label="${t('palAnchorClear')}">✕</button>` : ''}</div>
+        ${anc ? `<button class="btn" data-act="pAnchorClear" aria-label="${t('palAnchorClear')}">✕</button>` : ''}</div>`}
     </div>
     <button class="btn primary big" data-act="pRoll">🎲 ${t(P.result ? 'palReroll' : 'palRoll')}</button>`;
   const res = (P.result || []).map(b => ({ pen: R.getPen(b.code), shadows: b.shadows.map(c => R.getPen(c)).filter(p => p?.hex) })).filter(b => b.pen?.hex);
@@ -195,7 +202,7 @@ function viewFavorites() {
     const codes = f.kind === 'blend' ? f.codes : f.bases.map(b => b.code);
     html += `<div class="card fav">
       <div class="row" style="align-items:flex-start"><div class="grow"><h2 style="margin:0 0 2px">${esc(f.name)}</h2>
-        <div class="small">${t(KIND[f.kind])}${f.kind === 'palette' && f.type ? ' · ' + t('pt_' + f.type) : ''}${f.kind === 'blend' ? ' · ' + t(f.mode === 'direct' ? 'pathDirect' : 'pathVivid') : ''} · ${fmtDate(f.created)}</div></div></div>
+        <div class="small">${t(KIND[f.kind])}${f.kind === 'palette' && f.type ? ' · ' + (f.type === 'theme' && f.theme ? t('th_' + f.theme) : t('pt_' + f.type)) : ''}${f.kind === 'blend' ? ' · ' + t(f.mode === 'direct' ? 'pathDirect' : 'pathVivid') : ''} · ${fmtDate(f.created)}</div></div></div>
       <div class="band small-band" style="margin-top:10px">${codes.map(c => { const p = R.getPen(c); return `<div class="${p?.hex ? '' : 'nohex'}" style="${p?.hex ? 'background:' + p.hex : ''}"></div>`; }).join('')}</div>
       ${f.kind === 'blend'
         ? `<div class="favcodes">${codes.map(penChip).join('<span class="arrow">→</span>')}</div>`
@@ -447,6 +454,7 @@ document.addEventListener('click', async e => {
       ${paras.map(x => `<p class="muted" style="font-size:15px">${esc(x)}</p>`).join('')}`);
   }
   if (a === 'pType') { P.type = el.dataset.v; P.locks = []; rollPalette(); render(); }
+  if (a === 'pTheme') { P.theme = el.dataset.v; P.locks = []; rollPalette(); render(); }
   if (a === 'pMood') { P.mood = el.dataset.v; P.locks = []; rollPalette(); render(); }
   if (a === 'pCount') { P.count = Math.min(5, Math.max(3, P.count + Number(el.dataset.d))); P.locks = P.locks.slice(0, P.count); rollPalette(); render(); }
   if (a === 'pRoll') { rollPalette(); render(); }
@@ -454,7 +462,7 @@ document.addEventListener('click', async e => {
   if (a === 'pAnchor') openPicker('palAnchor', code => { P.anchor = code; P.locks = []; rollPalette(); }, P.anchor, t('palAnchor'));
   if (a === 'pAnchorClear') { P.anchor = null; P.locks = []; rollPalette(); render(); }
   if (a === 'resetBlend') { Object.assign(S, { start: null, end: null, n: 5, mode: 'vivid', locks: {}, result: null, error: null }); saveBlend(); render(); toast(t('resetDoneView')); }
-  if (a === 'resetPal') { Object.assign(P, { type: 'random', mood: 'all', count: 4, anchor: null, locks: [], result: null }); savePal(); render(); toast(t('resetDoneView')); }
+  if (a === 'resetPal') { Object.assign(P, { type: 'random', mood: 'all', theme: 'spring', count: 4, anchor: null, locks: [], result: null }); savePal(); render(); toast(t('resetDoneView')); }
   if (a === 'saveBlend' && S.result) {
     const s0 = R.getPen(S.start), e0 = R.getPen(S.end);
     openNameSheet(t('favSaveBlend'), `${s0.code} → ${e0.code}`, name => {
@@ -463,8 +471,8 @@ document.addEventListener('click', async e => {
     });
   }
   if (a === 'savePal' && P.result) {
-    openNameSheet(t('favSavePalette'), `${t('pt_' + P.type)} – ${P.result.map(b => b.code).join(', ')}`, name => {
-      F.addFav({ kind: 'palette', name, type: P.type, mood: P.mood, bases: P.result.map(b => ({ code: b.code, shadows: b.shadows })) });
+    openNameSheet(t('favSavePalette'), P.type === 'theme' ? `${t('th_' + P.theme)} – ${P.result.map(b => b.code).join(', ')}` : `${t('pt_' + P.type)} – ${P.result.map(b => b.code).join(', ')}`, name => {
+      F.addFav({ kind: 'palette', name, type: P.type, mood: P.mood, theme: P.type === 'theme' ? P.theme : undefined, bases: P.result.map(b => ({ code: b.code, shadows: b.shadows })) });
       toast(t('favSaved'));
     });
   }
@@ -476,7 +484,7 @@ document.addEventListener('click', async e => {
       Object.assign(S, { start: f.start, end: f.end, n: f.codes.length, mode: f.mode || 'vivid', locks, view: 'blend' });
       recompute(); render(); scrollTo(0, 0);
     } else if (f) {
-      Object.assign(P, { type: f.type || 'random', mood: f.mood || 'all', count: Math.min(5, Math.max(3, f.bases.length)), anchor: null, locks: [], result: f.bases.map(b => ({ code: b.code, shadows: b.shadows || [] })) });
+      Object.assign(P, { type: f.type || 'random', mood: f.mood || 'all', theme: f.theme || P.theme, count: Math.min(5, Math.max(3, f.bases.length)), anchor: null, locks: [], result: f.bases.map(b => ({ code: b.code, shadows: b.shadows || [] })) });
       savePal(); S.view = 'palette'; render(); scrollTo(0, 0);
     }
   }

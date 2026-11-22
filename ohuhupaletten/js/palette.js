@@ -1,5 +1,5 @@
 // Palettmotorn: slumpar fram harmoniska grundfärger ur dina pennor och föreslår skuggpennor till varje.
-import { deltaE, toOklch } from './color.js';
+import { deltaE, toOklch, hexToOklab } from './color.js';
 
 const deg = r => ((r * 180) / Math.PI + 360) % 360;
 const hueDiff = (a, b) => { const d = Math.abs(a - b) % 360; return d > 180 ? 360 - d : d; };
@@ -9,7 +9,41 @@ const pickRandom = (list, rnd) => list[Math.floor(rnd() * list.length)];
 /** Lägg till L, C, h (grader) på pennorna. */
 export const withLch = pens => pens.map(p => { const [L, C, h] = toOklch(p.lab); return { ...p, L, C, h: deg(h) }; });
 
-const GREY = 0.03; // under detta räknas pennan som grå (saknar tydlig färgton)
+const GREY = 0.03;
+
+// Teman: typiska färger för årstider och högtider (målfärger – appen väljer dina närmaste pennor).
+export const THEMES = {
+  spring: { group: 'season', colors: ['#b8e0a0', '#d6e86a', '#f7e07a', '#f6c1d0', '#c9a7e0', '#a8d4f0', '#8fcf7a'] },
+  summer: { group: 'season', colors: ['#2f8fd0', '#2bb8b0', '#f8c830', '#f47a7a', '#4caf50', '#e03a3a', '#86d0f0'] },
+  autumn: { group: 'season', colors: ['#d4a020', '#e07a20', '#b4441e', '#7a2030', '#6e4a2a', '#707a30', '#c8903c'] },
+  winter: { group: 'season', colors: ['#cfe6f2', '#6a8fb0', '#1e3060', '#c0c4c8', '#e8ecf0', '#4a3a70', '#2c4a5a'] },
+  christmas: { group: 'holiday', colors: ['#c01c28', '#1e5a32', '#d4a830', '#e6e6e6', '#7a1c2a', '#8a5030', '#3e7a4a'] },
+  easter: { group: 'holiday', colors: ['#f8e060', '#cdb4e8', '#bfe3a0', '#f6c6d6', '#f4e6c8', '#b0d8f0', '#f8b878'] },
+  midsummer: { group: 'holiday', colors: ['#4a78d0', '#f2d040', '#7cc050', '#eeeeea', '#d8343c', '#b896d8', '#2e7a3a'] },
+  halloween: { group: 'holiday', colors: ['#e8701a', '#1a1a1a', '#5a2a80', '#8ac030', '#4a2e1e', '#f0a030', '#7a1a1a'] },
+  valentine: { group: 'holiday', colors: ['#d0202c', '#f48ab0', '#f8cdd8', '#7a1838', '#d02a7a', '#f6e0e4'] },
+  newyear: { group: 'holiday', colors: ['#d4af37', '#c0c0c8', '#1a1a1a', '#e8d8b0', '#1a2450', '#8a8a96'] },
+};
+
+function themePalette(all, key, count, lockedList, rnd) {
+  const theme = THEMES[key] || THEMES.spring;
+  const W = l => [l[0], l[1] * 1.8, l[2] * 1.8];
+  const dW = (a, b) => deltaE(W(a), W(b));
+  const used = new Set(lockedList.map(p => p.code));
+  const bases = [...lockedList];
+  // blanda temats färger och ta så många som behövs
+  const slots = theme.colors.map(h => hexToOklab(h)).map(v => [rnd(), v]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+  let i = 0;
+  while (bases.length < count && i < slots.length * 2) {
+    const target = slots[i % slots.length]; i++;
+    const cands = all.filter(p => !used.has(p.code) && bases.every(b => deltaE(b.lab, p.lab) >= 10))
+      .map(p => ({ p, d: dW(p.lab, target) })).sort((a, b) => a.d - b.d).slice(0, 4);
+    if (!cands.length) continue;
+    const pick = cands[Math.floor(rnd() * Math.min(cands.length, 3))].p;
+    bases.push(pick); used.add(pick.code);
+  }
+  return { bases, used };
+} // under detta räknas pennan som grå (saknar tydlig färgton)
 
 export const MOODS = {
   all: () => true,
@@ -41,6 +75,12 @@ const HARMONY = {
 export function generatePalette({ pens, type = 'random', mood = 'all', count = 4, anchor = null, locks = [], rnd = Math.random }) {
   const all = withLch(pens);
   const byCode = new Map(all.map(p => [p.code, p]));
+  if (type === 'theme') {
+    const lockedT = locks.map(p => byCode.get(p.code)).filter(Boolean).slice(0, count);
+    const { bases, used } = themePalette(all, mood, count, lockedT, rnd);
+    const lockedSet = new Set(lockedT.map(p => p.code));
+    return { bases: bases.map(p => ({ pen: p, locked: lockedSet.has(p.code), shadows: shadowsFor(p, all, used) })), type, mood };
+  }
   const lockedList = locks.map(p => byCode.get(p.code)).filter(Boolean).slice(0, count);
   const lockedPens = Object.fromEntries(lockedList.map((p, i) => [i, p]));
   const used = new Set(lockedList.map(p => p.code));
