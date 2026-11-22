@@ -1,8 +1,8 @@
 {
   "name": "Ohuhupaletten",
   "short_name": "Ohuhupaletten",
-  "description": "Colour blends from the Ohuhu markers I own.",
-  "lang": "en",
+  "description": "Färgövergångar med mina egna Ohuhu-pennor.",
+  "lang": "sv",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

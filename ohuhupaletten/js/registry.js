@@ -8,7 +8,7 @@ export const SOURCES = ['official', 'external', 'swatch'];
 export const EXPECTED = { colors: 215, blenders: 1 };
 export const COMMUNITY_CSV =
   'https://docs.google.com/spreadsheets/d/e/2PACX-1vTXyBuMZShW6A_T96cn-InrAbiv2ef9C4aEuVBewjqaaSaZ5Y8irlKwE3sKHwf4jA/pub?output=csv';
-export const COMMUNITY_LABEL = 'MysticSparkleWings – BIG Ohuhu Spreadsheet (community, approximate)';
+export const COMMUNITY_LABEL = 'MysticSparkleWings – BIG Ohuhu Spreadsheet (community, ungefärliga värden)';
 
 const read = (k, fallback) => { try { return JSON.parse(localStorage.getItem(k)) ?? fallback; } catch { return fallback; } };
 const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* lagring otillgänglig */ } };

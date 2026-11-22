@@ -1,6 +1,12 @@
 // Blend-motorn: väljer pennor ur registret som tillsammans ligger så nära en ideal övergång som möjligt.
 import { deltaE, interpolate, oklabToHex } from './color.js';
 
+// Vid matchning väger kulör och mättnad tyngre än ljushet (a/b skalas), så att t.ex. en grön
+// övergång väljer gröna pennor i stället för grå med rätt ljushet. Visade ΔE-värden är vanliga OKLab-ΔE.
+export const HUE_WEIGHT = 1.8;
+const W = l => [l[0], l[1] * HUE_WEIGHT, l[2] * HUE_WEIGHT];
+const dW = (p, q) => deltaE(W(p), W(q));
+
 /**
  * @param {object} o
  * @param {Array}  o.pens     Pennor med giltigt färgvärde: { code, lab, ... } (blendern ska redan vara bortfiltrerad)
@@ -24,14 +30,14 @@ export function computeBlend({ pens, n, anchors, mode = 'direct', beamWidth = 40
     for (let i = a; i <= b; i++) targets[i] = interpolate(anchors[a].lab, anchors[b].lab, (i - a) / (b - a), mode);
   }
   const idealStep = [];
-  for (let i = 0; i < n - 1; i++) idealStep.push(deltaE(targets[i], targets[i + 1]));
+  for (let i = 0; i < n - 1; i++) idealStep.push(dW(targets[i], targets[i + 1]));
 
   // 2. Kandidater per fri position
   const anchorCodes = new Set(idx.map(i => anchors[i].code));
   const free = pens.filter(p => !anchorCodes.has(p.code));
   const candidates = targets.map((t, i) => {
-    if (anchors[i]) return [{ pen: anchors[i], d: deltaE(anchors[i].lab, t) }];
-    return free.map(pen => ({ pen, d: deltaE(pen.lab, t) })).sort((x, y) => x.d - y.d).slice(0, candidatesPerStep);
+    if (anchors[i]) return [{ pen: anchors[i], d: dW(anchors[i].lab, t) }];
+    return free.map(pen => ({ pen, d: dW(pen.lab, t) })).sort((x, y) => x.d - y.d).slice(0, candidatesPerStep);
   });
 
   // 3. Beam search över hela sekvensen
@@ -42,7 +48,7 @@ export function computeBlend({ pens, n, anchors, mode = 'direct', beamWidth = 40
       const prev = st.seq[st.seq.length - 1];
       for (const c of candidates[i]) {
         if (!anchors[i] && st.used.has(c.pen.code)) continue;
-        const step = deltaE(prev.lab, c.pen.lab);
+        const step = dW(prev.lab, c.pen.lab);
         const cost = st.cost + c.d * c.d + w * (step - idealStep[i - 1]) ** 2;
         next.push({ st, pen: c.pen, cost });
       }
@@ -72,7 +78,7 @@ export function alternativesFor(result, i, pens, limit = 30) {
   const usedElsewhere = new Set(result.items.filter((_, j) => j !== i).map(x => x.pen.code));
   const t = result.items[i].target;
   return pens.filter(p => !usedElsewhere.has(p.code))
-    .map(pen => ({ pen, d: deltaE(pen.lab, t) }))
-    .sort((a, b) => a.d - b.d)
+    .map(pen => ({ pen, w: dW(pen.lab, t), d: deltaE(pen.lab, t) }))
+    .sort((a, b) => a.w - b.w)
     .slice(0, limit);
 }

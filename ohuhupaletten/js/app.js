@@ -48,7 +48,6 @@ function render() {
   document.documentElement.lang = getLang();
   $('#tagline').textContent = t('appTagline');
   document.querySelectorAll('[data-t]').forEach(el => (el.textContent = t(el.dataset.t)));
-  document.querySelectorAll('.lang button').forEach(b => b.classList.toggle('on', b.dataset.lang === getLang()));
   document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.view === S.view));
   const main = $('#main');
   if (S.view === 'blend') main.innerHTML = viewBlend();
@@ -74,7 +73,7 @@ function viewBlend() {
       <button class="swapbtn" data-act="swapEnds" aria-label="${t('swapEnds')}">⇄</button>${penButton('end')}</div></div>
     <div class="card">
       <div class="ctrl"><div><div class="label" style="margin:0">${t('steps')}</div></div>
-        <div class="stepper"><button data-act="n" data-d="-1" aria-label="−">−</button><span>${S.n}</span><button data-act="n" data-d="1" aria-label="+">+</button></div></div>
+        <div class="stepper"><button data-act="n" data-d="-1" aria-label="Färre">−</button><span>${S.n}</span><button data-act="n" data-d="1" aria-label="Fler">+</button></div></div>
       <div class="label">${t('path')}</div>
       <div class="seg"><button data-act="mode" data-mode="direct" class="${S.mode === 'direct' ? 'on' : ''}">${t('pathDirect')}</button>
         <button data-act="mode" data-mode="vivid" class="${S.mode === 'vivid' ? 'on' : ''}">${t('pathVivid')}</button></div>
@@ -91,7 +90,7 @@ function viewBlend() {
   html += `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h2 style="margin:0">${t('yourBlend')}</h2>
       ${anyLocked ? `<button class="btn ghost" data-act="unlockAll">${t('unlockAll')}</button>` : ''}</div>
     <div class="band">${r.items.map(x => `<div style="background:${x.pen.hex}"></div>`).join('')}</div>
-    <div class="ideal" title="ideal">${r.items.map(x => `<div style="background:${x.targetHex}"></div>`).join('')}</div>
+    <div class="ideal" title="Ideal övergång">${r.items.map(x => `<div style="background:${x.targetHex}"></div>`).join('')}</div>
     <div class="stats"><div class="stat"><b>${Math.round(r.evenness * 100)} %</b><span>${t('evenness')}</span></div>
       <div class="stat"><b>ΔE ${fmt(r.steps.reduce((a, b) => a + b, 0) / r.steps.length)}</b><span>${t('avgStep')}</span></div></div>
     <ul class="steplist">`;
@@ -167,8 +166,6 @@ function viewInfo() {
       ${['about1', 'about2', 'about3', 'about4'].map(k => `<p class="muted">${t(k)}</p>`).join('')}</div>
     <div class="card"><h2>${t('dataTitle')}</h2><p class="muted">${t('dataBody')}</p>
       <p class="small">${esc(R.COMMUNITY_LABEL)}</p></div>
-    <div class="card"><div class="label">${t('language')}</div>
-      <div class="seg"><button data-lang="en" class="${getLang() === 'en' ? 'on' : ''}">English</button><button data-lang="sv" class="${getLang() === 'sv' ? 'on' : ''}">Svenska</button></div></div>
     <div class="card"><button class="btn danger" data-act="reset" style="width:100%">${t('resetData')}</button></div>
     <p class="small" style="text-align:center">Ohuhupaletten v0.2 · ${t('digital')}</p>`;
 }
@@ -298,8 +295,6 @@ $('#fileInput').addEventListener('change', async e => {
 
 // ---------------- Händelser ----------------
 document.addEventListener('click', async e => {
-  const langBtn = e.target.closest('[data-lang]');
-  if (langBtn) { setLang(langBtn.dataset.lang); render(); return; }
   const tab = e.target.closest('.tabs [data-view]');
   if (tab) { S.view = tab.dataset.view; render(); scrollTo(0, 0); return; }
   if (e.target.closest('[data-close]')) { closeSheet(); return; }

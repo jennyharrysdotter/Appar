@@ -5,10 +5,10 @@ En personlig, mobilanpassad webbapp för att hitta färgövergångar med **mina 
 ## Version 0.1 innehåller
 
 - **Pennregister** – 215 färgkoder + färglös blender (0), med kontroll av antal och dubbletter.
-- **Blend Lab** – välj start- och slutpenna, 3–10 pennor, via färghjulet (OKLCH, standard) eller direkt väg (OKLab). Byt eller lås pennor och räkna om.
+- **Övergångar** – välj start- och slutpenna, 3–10 pennor, via färghjulet (OKLCH, standard) eller direkt väg (OKLab). Byt eller lås pennor och räkna om.
 - **My Markers** – sök på kod, filtrera på familj och färgstatus, redigera HEX och källa, lägg till pennor, importera och exportera JSON/CSV.
 - **Hämta community-färgvärden** – importerar HEX-värden från MysticSparkleWings kalkylark och märker dem som *Extern*.
-- Engelska som standardspråk, svenska som tillval.
+- Hela appen är på svenska.
 
 ## Principer
 
@@ -27,7 +27,7 @@ js/app.js             Vyer och händelser
 js/blend.js           Blend-motorn (ideal övergång + beam search över hela sekvensen)
 js/color.js           sRGB ↔ OKLab/OKLCH, ΔE
 js/registry.js        Pennregister, lokala ändringar, import/export, community-import
-js/i18n.js            Engelska/svenska texter
+js/i18n.js            Appens texter (svenska)
 data/pens.json        Grundregistret – lägg till nya pennor här
 manifest.webmanifest  PWA-manifest
 sw.js                 Service worker (nätet först, cache offline)
