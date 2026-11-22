@@ -108,6 +108,7 @@ const dict = {
     pth_complement: 'Färger mitt emot varandra på färghjulet – kontrast som får det att lysa.',
     pth_triad: 'Tre färgområden jämnt fördelade runt färghjulet – livfullt men balanserat.',
     pm_all: 'Alla', pm_vivid: 'Klara', pm_muted: 'Dämpade', pm_pastel: 'Pastell', pm_dark: 'Mörka', pm_earthy: 'Jordnära', pm_grey: 'Gråtoner',
+    reset: 'Nollställ', resetDoneView: 'Nollställt',
     language: 'Språk', resetData: 'Återställ mina lokala ändringar', resetConfirm: 'Ta bort alla lokala ändringar och färgvärden på den här enheten?',
     resetDone: 'Lokala ändringar borttagna.', saved: 'Sparat', close: 'Stäng',
   },

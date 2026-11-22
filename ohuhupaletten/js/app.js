@@ -88,7 +88,7 @@ function viewBlend() {
       <h2>${t('noColorsTitle')}</h2><p class="muted">${t('noColorsBody')}</p>
       <button class="btn primary" data-act="go" data-view="markers">${t('goMarkers')}</button></div>`;
   }
-  let html = `<div class="card"><div class="ends">${penButton('start')}
+  let html = `${S.start || S.end ? `<div class="resetrow"><button class="btn ghost" data-act="resetBlend">↺ ${t('reset')}</button></div>` : ''}<div class="card"><div class="ends">${penButton('start')}
       <button class="swapbtn" data-act="swapEnds" aria-label="${t('swapEnds')}">⇄</button>${penButton('end')}</div></div>
     <div class="card">
       <div class="ctrl"><div><div class="label" style="margin:0">${t('steps')}</div></div>
@@ -145,7 +145,8 @@ function rollPalette() {
 function viewPalette() {
   if (!R.colorPens().length) return viewBlend();
   const anc = P.anchor ? R.getPen(P.anchor) : null;
-  let html = `<div class="card">
+  const changed = P.result || P.anchor || P.type !== 'random' || P.mood !== 'all' || P.count !== 4;
+  let html = `${changed ? `<div class="resetrow"><button class="btn ghost" data-act="resetPal">↺ ${t('reset')}</button></div>` : ''}<div class="card">
       <div class="label" style="display:flex;align-items:center;gap:8px">${t('palType')} ${info('ptype')}</div>
       <div class="chips wrap" style="padding-top:2px">${PTYPES.map(k => `<button data-act="pType" data-v="${k}" class="${P.type === k ? 'on' : ''}">${t('pt_' + k)}</button>`).join('')}</div>
       <p class="small" style="margin:4px 2px 12px">${t('pth_' + P.type)}</p>
@@ -405,6 +406,8 @@ document.addEventListener('click', async e => {
   if (a === 'pLock') { const c = el.dataset.code; P.locks = P.locks.includes(c) ? P.locks.filter(x => x !== c) : [...P.locks, c].slice(0, P.count); savePal(); render(); }
   if (a === 'pAnchor') openPicker('palAnchor', code => { P.anchor = code; P.locks = []; rollPalette(); }, P.anchor, t('palAnchor'));
   if (a === 'pAnchorClear') { P.anchor = null; P.locks = []; rollPalette(); render(); }
+  if (a === 'resetBlend') { Object.assign(S, { start: null, end: null, n: 5, mode: 'vivid', locks: {}, result: null, error: null }); saveBlend(); render(); toast(t('resetDoneView')); }
+  if (a === 'resetPal') { Object.assign(P, { type: 'random', mood: 'all', count: 4, anchor: null, locks: [], result: null }); savePal(); render(); toast(t('resetDoneView')); }
   if (a === 'unlockAll') { S.locks = {}; recompute(); render(); }
   if (a === 'mHas') { S.m.has = el.dataset.v; render(); }
   if (a === 'mFam') { S.m.fam = el.dataset.v; render(); }

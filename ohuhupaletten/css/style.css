@@ -197,3 +197,5 @@ dialog#sheet::backdrop { background: rgba(30, 25, 20, .35); }
 .sh i { width: 22px; height: 22px; border-radius: 7px; }
 .tabs button span { white-space: nowrap; }
 .chips.wrap { flex-wrap: wrap; overflow: visible; }
+.resetrow { display: flex; justify-content: flex-end; margin: 6px 0 -6px; }
+.resetrow .btn { font-size: 14px; }
