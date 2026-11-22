@@ -1,4 +1,4 @@
-# Ohuhu Blend Lab
+# Ohuhupaletten
 
 En personlig, mobilanpassad webbapp för att hitta färgövergångar med **mina egna** Ohuhu Honolulu-markers (Honolulu 168 + Midtones 48).
 
@@ -51,7 +51,7 @@ Ohuhu publicerar inga HEX-värden. Värdena i `data/pens.json` är uppmätta fr�
 
 ## Publicering och installation
 
-Appen ligger i mappen `blend-lab/` i repot Appar och publiceras med GitHub Pages: https://jennyharrysdotter.github.io/Appar/blend-lab/
+Appen ligger i mappen `ohuhupaletten/` i repot Appar och publiceras med GitHub Pages: https://jennyharrysdotter.github.io/Appar/ohuhupaletten/
 
 Den är en PWA (manifest + service worker) och kan installeras på hemskärmen via Chrome → ⋮ → *Lägg till på startskärmen / Installera app*. Höj `CACHE`-versionen i `sw.js` när filer ändras.
 

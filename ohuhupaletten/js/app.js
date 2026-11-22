@@ -170,7 +170,7 @@ function viewInfo() {
     <div class="card"><div class="label">${t('language')}</div>
       <div class="seg"><button data-lang="en" class="${getLang() === 'en' ? 'on' : ''}">English</button><button data-lang="sv" class="${getLang() === 'sv' ? 'on' : ''}">Svenska</button></div></div>
     <div class="card"><button class="btn danger" data-act="reset" style="width:100%">${t('resetData')}</button></div>
-    <p class="small" style="text-align:center">Ohuhu Blend Lab v0.1 · ${t('digital')}</p>`;
+    <p class="small" style="text-align:center">Ohuhupaletten v0.2 · ${t('digital')}</p>`;
 }
 
 // ---------------- Sheets ----------------

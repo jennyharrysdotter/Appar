@@ -1,5 +1,5 @@
 // Nätet först (så nya versioner och pennregistret syns direkt), cache som reserv offline.
-const CACHE = "blend-lab-v2";
+const CACHE = "ohuhupaletten-v1";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./css/style.css", "./js/app.js", "./js/blend.js",
   "./js/color.js", "./js/registry.js", "./js/i18n.js", "./data/pens.json", "./icon-192.png", "./icon-512.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE))); self.skipWaiting(); });
