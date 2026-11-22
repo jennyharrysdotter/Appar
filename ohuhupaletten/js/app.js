@@ -156,7 +156,7 @@ const matches = (p, q) => !q || p.code.toLowerCase().includes(q) || (p.name || '
 
 function renderMarkerList() {
   const q = S.m.q.trim().toLowerCase();
-  const list = R.getPens().filter(p => matches(p, q)
+  const list = R.getPens().slice().sort((a, b) => (a.isBlender - b.isBlender) || byCode(a, b)).filter(p => matches(p, q)
     && (!S.m.fam || p.family === S.m.fam) && (!S.m.grp || p.group === S.m.grp)
     && (S.m.has === 'all' || (S.m.has === 'with' ? p.hex : !p.hex && !p.isBlender)));
   $('#mList').innerHTML = list.length ? list.map(p => `<li class="prow" data-act="edit" data-code="${esc(p.code)}">
