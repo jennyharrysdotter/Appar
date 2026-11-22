@@ -24,6 +24,7 @@ En personlig, mobilanpassad webbapp för att hitta färgövergångar med **mina 
 index.html            Appens skal
 css/style.css         Utseende
 js/app.js             Vyer och händelser
+js/favorites.js       Favoriter (lokal lagring, export/import)
 js/palette.js         Palettmotorn (harmonier, stämningar, skuggor)
 js/blend.js           Blend-motorn (ideal övergång + beam search över hela sekvensen)
 js/color.js           sRGB ↔ OKLab/OKLCH, ΔE

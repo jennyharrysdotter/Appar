@@ -2,6 +2,7 @@ import { t, getLang, setLang } from './i18n.js';
 import * as R from './registry.js';
 import { computeBlend, alternativesFor } from './blend.js';
 import { generatePalette } from './palette.js';
+import * as F from './favorites.js';
 import { normalizeHex } from './color.js';
 
 const $ = s => document.querySelector(s);
@@ -70,6 +71,7 @@ function render() {
   const main = $('#main');
   if (S.view === 'blend') main.innerHTML = viewBlend();
   if (S.view === 'palette') main.innerHTML = viewPalette();
+  if (S.view === 'favorites') main.innerHTML = viewFavorites();
   if (S.view === 'markers') { main.innerHTML = viewMarkers(); renderMarkerList(); }
   if (S.view === 'info') main.innerHTML = viewInfo();
 }
@@ -126,7 +128,8 @@ function viewBlend() {
     </li>`;
     if (i < S.n - 1) html += `<li class="gap">ΔE ${fmt(r.steps[i])}</li>`;
   });
-  html += `</ul><p class="small" style="margin:10px 2px 0">${t('tapToSwap')}</p></div>`;
+  html += `</ul><p class="small" style="margin:10px 2px 0">${t('tapToSwap')}</p>
+    <button class="btn favbtn" data-act="saveBlend">♡ ${t('favSave')}</button></div>`;
   if (r.maxDist > FAR) html += `<div class="note"><span>⚠ ${t('farWarn')}</span></div>`;
   html += `<div class="note"><span><b>${t('digital')}</b>${t('digitalLong')}${anyExternal ? ' ' + t('externalWarn') : ''}${anyUncertain ? ' ≈ ' + t('uncertain') : ''}</span></div>`;
   return html;
@@ -172,10 +175,50 @@ function viewPalette() {
             <button class="lockbtn ${locked ? 'on' : ''}" data-act="pLock" data-code="${esc(b.pen.code)}">${locked ? '🔒' : t('lock')}</button></div>
           <div class="shadows"><span class="small">${t('palShadows')}</span>${b.shadows.length ? b.shadows.map(x => `<span class="sh"><i style="background:${x.hex}"></i>${esc(x.code)}</span>`).join('') : `<span class="small">${t('palNoShadow')}</span>`}</div>
         </li>`; }).join('')}</ul>
-      <p class="small" style="margin:10px 2px 0">${t('palLockHint')}</p></div>
+      <p class="small" style="margin:10px 2px 0">${t('palLockHint')}</p>
+      <button class="btn favbtn" data-act="savePal">♡ ${t('favSave')}</button></div>
       <div class="note"><span><b>${t('digital')}</b>${t('digitalLong')}</span></div>`;
   }
   return html;
+}
+
+const KIND = { blend: 'favKindBlend', palette: 'favKindPalette' };
+const fmtDate = iso => { try { return new Date(iso).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: 'numeric' }); } catch { return ''; } };
+const penChip = code => { const p = R.getPen(code); return `<span class="sh"><i class="${p?.hex ? '' : 'nohex'}" style="${p?.hex ? 'background:' + p.hex : ''}"></i>${esc(code)}</span>`; };
+
+function viewFavorites() {
+  const list = F.getFavs();
+  let html = `<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">${t('favTitle')}</h2>
+      <span class="small">${list.length}</span></div>
+      ${list.length ? '' : `<p class="muted">${t('favEmpty')}</p>`}</div>`;
+  for (const f of list) {
+    const codes = f.kind === 'blend' ? f.codes : f.bases.map(b => b.code);
+    html += `<div class="card fav">
+      <div class="row" style="align-items:flex-start"><div class="grow"><h2 style="margin:0 0 2px">${esc(f.name)}</h2>
+        <div class="small">${t(KIND[f.kind])}${f.kind === 'palette' && f.type ? ' · ' + t('pt_' + f.type) : ''}${f.kind === 'blend' ? ' · ' + t(f.mode === 'direct' ? 'pathDirect' : 'pathVivid') : ''} · ${fmtDate(f.created)}</div></div></div>
+      <div class="band small-band" style="margin-top:10px">${codes.map(c => { const p = R.getPen(c); return `<div class="${p?.hex ? '' : 'nohex'}" style="${p?.hex ? 'background:' + p.hex : ''}"></div>`; }).join('')}</div>
+      ${f.kind === 'blend'
+        ? `<div class="favcodes">${codes.map(penChip).join('<span class="arrow">→</span>')}</div>`
+        : `<div class="favcodes col">${f.bases.map(b => `<div>${penChip(b.code)}${b.shadows?.length ? `<span class="small" style="margin:0 4px">${t('palShadows')}</span>${b.shadows.map(penChip).join('')}` : ''}</div>`).join('')}</div>`}
+      <div class="row wrap" style="margin-top:12px">
+        <button class="btn primary grow" data-act="favOpen" data-id="${f.id}">${t('favOpen')}</button>
+        <button class="btn" data-act="favRename" data-id="${f.id}">${t('favRename')}</button>
+        <button class="btn danger" data-act="favDelete" data-id="${f.id}">${t('favDelete')}</button></div>
+    </div>`;
+  }
+  html += `<div class="card"><div class="label">${t('favBackup')}</div><p class="muted" style="margin-top:0">${t('favBackupInfo')}</p>
+    <div class="tools"><button class="btn" data-act="favExport" ${list.length ? '' : 'disabled'}>${t('favExport')}</button><button class="btn" data-act="favImport">${t('favImport')}</button></div></div>`;
+  return html;
+}
+
+function openNameSheet(title, initial, onSave) {
+  openSheet(`<div class="sheet-head"><div class="row"><h3 class="grow">${title}</h3><button class="btn ghost" data-close>${t('close')}</button></div></div>
+    <form id="nameForm" autocomplete="off"><label class="field"><span>${t('favName')}</span><input name="n" value="${esc(initial)}" maxlength="60" enterkeyhint="done"></label>
+    <div class="err" id="nameErr"></div><button class="btn primary" type="submit" style="width:100%">${t('save')}</button></form>`, body => {
+    const f = body.querySelector('#nameForm'); const inp = f.n;
+    setTimeout(() => { inp.focus(); inp.select(); }, 80);
+    f.addEventListener('submit', e => { e.preventDefault(); const v = inp.value.trim(); if (!v) { body.querySelector('#nameErr').textContent = t('favNameEmpty'); return; } onSave(v); closeSheet(); render(); });
+  });
 }
 
 function viewMarkers() {
@@ -365,10 +408,14 @@ function download(name, text, type) {
 }
 const stamp = () => new Date().toISOString().slice(0, 10);
 
+let fileTarget = 'pens';
 $('#fileInput').addEventListener('change', async e => {
   const file = e.target.files[0]; e.target.value = '';
   if (!file) return;
-  try { const r = R.importText(await file.text()); recompute(); render(); toast(t('importDone', r), 6000); }
+  try {
+    if (fileTarget === 'favs') { const r = F.importFavs(await file.text()); render(); toast(t('favImported', r), 5000); }
+    else { const r = R.importText(await file.text()); recompute(); render(); toast(t('importDone', r), 6000); }
+  }
   catch (err) { toast('⚠ ' + err.message, 6000); }
 });
 
@@ -408,13 +455,42 @@ document.addEventListener('click', async e => {
   if (a === 'pAnchorClear') { P.anchor = null; P.locks = []; rollPalette(); render(); }
   if (a === 'resetBlend') { Object.assign(S, { start: null, end: null, n: 5, mode: 'vivid', locks: {}, result: null, error: null }); saveBlend(); render(); toast(t('resetDoneView')); }
   if (a === 'resetPal') { Object.assign(P, { type: 'random', mood: 'all', count: 4, anchor: null, locks: [], result: null }); savePal(); render(); toast(t('resetDoneView')); }
+  if (a === 'saveBlend' && S.result) {
+    const s0 = R.getPen(S.start), e0 = R.getPen(S.end);
+    openNameSheet(t('favSaveBlend'), `${s0.code} → ${e0.code}`, name => {
+      F.addFav({ kind: 'blend', name, start: S.start, end: S.end, n: S.n, mode: S.mode, codes: S.result.items.map(x => x.pen.code) });
+      toast(t('favSaved'));
+    });
+  }
+  if (a === 'savePal' && P.result) {
+    openNameSheet(t('favSavePalette'), `${t('pt_' + P.type)} – ${P.result.map(b => b.code).join(', ')}`, name => {
+      F.addFav({ kind: 'palette', name, type: P.type, mood: P.mood, bases: P.result.map(b => ({ code: b.code, shadows: b.shadows })) });
+      toast(t('favSaved'));
+    });
+  }
+  if (a === 'favOpen') {
+    const f = F.getFav(el.dataset.id);
+    if (f?.kind === 'blend') {
+      // lås alla mellansteg så att exakt den sparade övergången visas
+      const locks = {}; f.codes.forEach((c, i) => { if (i > 0 && i < f.codes.length - 1) locks[i] = c; });
+      Object.assign(S, { start: f.start, end: f.end, n: f.codes.length, mode: f.mode || 'vivid', locks, view: 'blend' });
+      recompute(); render(); scrollTo(0, 0);
+    } else if (f) {
+      Object.assign(P, { type: f.type || 'random', mood: f.mood || 'all', count: Math.min(5, Math.max(3, f.bases.length)), anchor: null, locks: [], result: f.bases.map(b => ({ code: b.code, shadows: b.shadows || [] })) });
+      savePal(); S.view = 'palette'; render(); scrollTo(0, 0);
+    }
+  }
+  if (a === 'favRename') { const f = F.getFav(el.dataset.id); if (f) openNameSheet(t('favRename'), f.name, name => F.renameFav(f.id, name)); }
+  if (a === 'favDelete') { const f = F.getFav(el.dataset.id); if (f && confirm(t('favDeleteConfirm', f.name))) { F.deleteFav(f.id); render(); toast(t('favDeleted')); } }
+  if (a === 'favExport') download(`ohuhupaletten-favoriter-${stamp()}.json`, F.exportFavs(), 'application/json');
+  if (a === 'favImport') { fileTarget = 'favs'; $('#fileInput').click(); }
   if (a === 'unlockAll') { S.locks = {}; recompute(); render(); }
   if (a === 'mHas') { S.m.has = el.dataset.v; render(); }
   if (a === 'mFam') { S.m.fam = el.dataset.v; render(); }
   if (a === 'mGrp') { S.m.grp = el.dataset.v; render(); }
   if (a === 'edit') openEditor(el.dataset.code);
   if (a === 'add') openEditor(null);
-  if (a === 'import') $('#fileInput').click();
+  if (a === 'import') { fileTarget = 'pens'; $('#fileInput').click(); }
   if (a === 'exportJson') download(`ohuhu-pens-${stamp()}.json`, R.exportJSON(), 'application/json');
   if (a === 'exportCsv') download(`ohuhu-pens-${stamp()}.csv`, R.exportCSV(), 'text/csv');
   if (a === 'community') {

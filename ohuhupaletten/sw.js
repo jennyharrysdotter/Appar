@@ -1,7 +1,7 @@
 // Nätet först, förbi webbläsarens HTTP-cache (GitHub Pages cachar annars i 10 min),
 // så att nya versioner syns direkt. Sparad kopia används bara offline.
-const CACHE = "ohuhupaletten-v12";
-const CORE = ["./", "./index.html", "./manifest.webmanifest", "./css/style.css", "./js/app.js", "./js/blend.js", "./js/palette.js",
+const CACHE = "ohuhupaletten-v13";
+const CORE = ["./", "./index.html", "./manifest.webmanifest", "./css/style.css", "./js/app.js", "./js/blend.js", "./js/palette.js", "./js/favorites.js",
   "./js/color.js", "./js/registry.js", "./js/i18n.js", "./data/pens.json", "./icon-192.png", "./icon-512.png"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE.map(u => new Request(u, { cache: "reload" })))));

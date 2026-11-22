@@ -199,3 +199,12 @@ dialog#sheet::backdrop { background: rgba(30, 25, 20, .35); }
 .chips.wrap { flex-wrap: wrap; overflow: visible; }
 .resetrow { display: flex; justify-content: flex-end; margin: 6px 0 -6px; }
 .resetrow .btn { font-size: 14px; }
+
+.favbtn { width: 100%; margin-top: 12px; }
+.small-band { height: 46px; border-radius: 12px; }
+.favcodes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
+.favcodes.col { flex-direction: column; align-items: flex-start; }
+.favcodes.col > div { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.favcodes .arrow { color: var(--ink-3); font-size: 12px; }
+.sh i.nohex { background: var(--hatch); }
+.tabs button { font-size: 11px; }

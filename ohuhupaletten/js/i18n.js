@@ -2,7 +2,7 @@
 const dict = {
   sv: {
     appTagline: 'Övergångar med pennorna du äger',
-    navBlend: 'Övergångar', navPalette: 'Paletter', navMarkers: 'Mina pennor', navInfo: 'Om',
+    navBlend: 'Övergångar', navPalette: 'Paletter', navFavorites: 'Favoriter', navMarkers: 'Mina pennor', navInfo: 'Om',
     start: 'Start', end: 'Slut', choose: 'Välj penna', swapEnds: 'Byt plats på start och slut',
     steps: 'Pennor i övergången', path: 'Väg', pathDirect: 'Direkt', pathVivid: 'Via färghjulet',
     pathDirectHint: 'Går rakt mellan färgerna. Mellanstegen blir mjuka och lite dämpade – bra för skuggor, naturtoner och övergångar mot grått eller brunt.', pathVividHint: 'Följer färghjulet och behåller färgstyrkan. Gul till grön går via gulgrönt, gul till röd via orange – bra när du vill ha en klar och levande skala.',
@@ -109,6 +109,14 @@ const dict = {
     pth_triad: 'Tre färgområden jämnt fördelade runt färghjulet – livfullt men balanserat.',
     pm_all: 'Alla', pm_vivid: 'Klara', pm_muted: 'Dämpade', pm_pastel: 'Pastell', pm_dark: 'Mörka', pm_earthy: 'Jordnära', pm_grey: 'Gråtoner',
     reset: 'Nollställ', resetDoneView: 'Nollställt',
+    favSave: 'Spara som favorit', favSaveBlend: 'Spara övergång', favSavePalette: 'Spara palett', favName: 'Namn',
+    favNameEmpty: 'Ge favoriten ett namn.', favSaved: 'Sparad bland favoriter', favTitle: 'Dina favoriter',
+    favEmpty: 'Inga favoriter ännu. Tryck på ♡ Spara som favorit under en övergång eller palett.',
+    favKindBlend: 'Övergång', favKindPalette: 'Palett', favOpen: 'Öppna', favRename: 'Byt namn', favDelete: 'Ta bort',
+    favDeleteConfirm: (n) => `Ta bort favoriten ”${n}”?`, favDeleted: 'Favoriten är borttagen',
+    favBackup: 'Säkerhetskopia', favBackupInfo: 'Favoriterna sparas bara på den här telefonen. Exportera en fil då och då, så kan du läsa in dem igen om du byter telefon eller rensar webbläsaren.',
+    favExport: 'Exportera favoriter', favImport: 'Importera favoriter',
+    favImported: (r) => `${r.added} favoriter importerade` + (r.skipped ? `, ${r.skipped} fanns redan eller kunde inte läsas.` : '.'),
     language: 'Språk', resetData: 'Återställ mina lokala ändringar', resetConfirm: 'Ta bort alla lokala ändringar och färgvärden på den här enheten?',
     resetDone: 'Lokala ändringar borttagna.', saved: 'Sparat', close: 'Stäng',
   },
