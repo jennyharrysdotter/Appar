@@ -31,6 +31,7 @@ const swStyle = p => (p?.isBlender ? '' : p?.hex ? `background:${p.hex}` : '');
 const swClass = p => (p?.isBlender ? 'blendersw' : p?.hex ? '' : 'nohex');
 const badge = p => (p.isBlender ? '' : `<span class="badge ${p.hex ? p.hexSource : 'none'}">${t('src' + (p.hex ? p.hexSource : 'none'))}${p.hex && p.uncertain ? ' ≈' : ''}</span>`);
 const sub = p => p.name || p.group || '';
+const info = k => `<button class="infobtn" data-act="help" data-k="${k}" aria-label="Förklaring">i</button>`;
 // Sortering på kod: familj (bokstäver) i bokstavsordning, sedan nummer i stigande ordning.
 // Vid samma nummer (t.ex. R015 och R15) kommer koden med inledande nolla först.
 const codeKey = c => { const m = c.match(/^([A-Z]*)(\d*)$/) || [, c, '']; return [m[1], m[2] === '' ? -1 : parseInt(m[2], 10), m[2].length]; };
@@ -97,12 +98,13 @@ function viewBlend() {
   const anyExternal = r.items.some(x => x.pen.hexSource === 'external');
   const anyUncertain = r.items.some(x => x.pen.uncertain);
   const anyLocked = Object.keys(S.locks).length > 0;
-  html += `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h2 style="margin:0">${t('yourBlend')}</h2>
+  html += `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h2 style="margin:0;display:flex;align-items:center;gap:8px">${t('yourBlend')} ${info('result')}</h2>
       ${anyLocked ? `<button class="btn ghost" data-act="unlockAll">${t('unlockAll')}</button>` : ''}</div>
     <div class="band">${r.items.map(x => `<div style="background:${x.pen.hex}"></div>`).join('')}</div>
     <div class="ideal" title="Ideal övergång">${r.items.map(x => `<div style="background:${x.targetHex}"></div>`).join('')}</div>
-    <div class="stats"><div class="stat"><b>${Math.round(r.evenness * 100)} %</b><span>${t('evenness')}</span></div>
-      <div class="stat"><b>ΔE ${fmt(r.steps.reduce((a, b) => a + b, 0) / r.steps.length)}</b><span>${t('avgStep')}</span></div></div>
+    <div class="legend"><span>${t('bandLegend')}</span>${info('ideal')}</div>
+    <div class="stats"><div class="stat"><b>${Math.round(r.evenness * 100)} %</b><span>${t('evenness')}</span>${info('evenness')}</div>
+      <div class="stat"><b>ΔE ${fmt(r.steps.reduce((a, b) => a + b, 0) / r.steps.length)}</b><span>${t('avgStep')}</span>${info('step')}</div></div>
     <ul class="steplist">`;
   r.items.forEach((x, i) => {
     const end = i === 0 || i === S.n - 1;
@@ -336,6 +338,12 @@ document.addEventListener('click', async e => {
   } else if (a === 'alts') openAlternatives(Number(el.dataset.i));
   if (a === 'install' && installPrompt) { installPrompt.prompt(); installPrompt.userChoice.finally(() => { installPrompt = null; render(); }); }
   if (a === 'copyLink') { try { await navigator.clipboard.writeText(APP_URL); toast(t('copied')); } catch { toast(APP_URL, 6000); } }
+  if (a === 'help') {
+    e.stopPropagation();
+    const [title, paras] = t('help')[el.dataset.k];
+    openSheet(`<div class="sheet-head"><div class="row"><h3 class="grow">${title}</h3><button class="btn ghost" data-close>${t('close')}</button></div></div>
+      ${paras.map(x => `<p class="muted" style="font-size:15px">${esc(x)}</p>`).join('')}`);
+  }
   if (a === 'unlockAll') { S.locks = {}; recompute(); render(); }
   if (a === 'mHas') { S.m.has = el.dataset.v; render(); }
   if (a === 'mFam') { S.m.fam = el.dataset.v; render(); }

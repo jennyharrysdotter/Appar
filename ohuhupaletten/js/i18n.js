@@ -58,6 +58,31 @@ const dict = {
     installOpenedInApp: 'Länken verkar vara öppnad i en annan apps webbläsare. Tryck på ⋮ och välj Öppna i Chrome först.',
     installAddress: 'Adress',
     copyLink: 'Kopiera länk', copied: 'Länken är kopierad',
+    bandLegend: 'Överst: dina pennor · Under: den perfekta övergången',
+    help: {
+      result: ['Så läser du resultatet', [
+        'Den stora färgremsan visar din övergång med pennorna appen valt, i ordning.',
+        'Den tunna remsan under visar den perfekta övergången – vad du skulle få med exakt rätt penna i varje steg. Ju mer lika remsorna är, desto bättre räcker dina pennor till.',
+        'Siffran mellan två pennor (t.ex. ΔE 14) är hur stort färgsteget är mellan dem.',
+        'Tryck på en penna för att få förslag på andra pennor. Lås behåller pennan när du ändrar något annat.',
+      ]],
+      ideal: ['Den perfekta övergången', [
+        'Appen räknar först fram en perfekt, jämn övergång mellan start och slut. Sedan letar den upp de pennor du äger som ligger närmast.',
+        'Den lilla rutan i hörnet av varje färgruta visar den perfekta färgen för just det steget, så att du kan jämföra.',
+        '”ΔE 2,7 från idealet” visar hur nära pennan ligger den perfekta färgen. Under 3 är riktigt bra, över 10 betyder att ingen av dina pennor ligger nära.',
+      ]],
+      evenness: ['Jämnhet', [
+        'Visar hur lika stora stegen är mellan pennorna.',
+        '100 % betyder exakt lika stora steg. Över 85 % är mycket jämnt, under 70 % betyder att något steg är tydligt större än de andra.',
+        'Är jämnheten låg kan du prova att byta eller låsa en penna, eller ändra antalet pennor.',
+      ]],
+      step: ['Snittsteg (ΔE)', [
+        'ΔE är ett mått på hur olika två färger ser ut för ögat.',
+        'Snittsteget är den genomsnittliga skillnaden mellan två pennor som ligger bredvid varandra.',
+        'Ungefär: under 3 syns knappt, 3–8 syns men är mjukt, 8–15 är ett tydligt steg och över 15 är ett stort steg.',
+        'Vill du ha en mjukare övergång – öka antalet pennor med +.',
+      ]],
+    },
     language: 'Språk', resetData: 'Återställ mina lokala ändringar', resetConfirm: 'Ta bort alla lokala ändringar och färgvärden på den här enheten?',
     resetDone: 'Lokala ändringar borttagna.', saved: 'Sparat', close: 'Stäng',
   },

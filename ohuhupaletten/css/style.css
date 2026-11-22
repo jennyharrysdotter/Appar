@@ -180,3 +180,9 @@ dialog#sheet::backdrop { background: rgba(30, 25, 20, .35); }
 .steps { margin: 4px 0 10px; padding-left: 22px; font-size: 14.5px; line-height: 1.5; }
 .steps li { margin: 6px 0; padding-left: 4px; }
 .addr { font-size: 12.5px; background: var(--soft); border-radius: 10px; padding: 10px; overflow-wrap: anywhere; }
+
+.infobtn { flex: none; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--ink-3); background: var(--card);
+  color: var(--ink-2); font: italic 700 13px/1 Georgia, serif; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+.stat { position: relative; }
+.stat .infobtn { position: absolute; top: 10px; right: 10px; }
+.legend { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; font-size: 12px; color: var(--ink-3); }
