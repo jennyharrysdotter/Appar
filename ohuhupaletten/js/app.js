@@ -25,6 +25,10 @@ const swStyle = p => (p?.isBlender ? '' : p?.hex ? `background:${p.hex}` : '');
 const swClass = p => (p?.isBlender ? 'blendersw' : p?.hex ? '' : 'nohex');
 const badge = p => (p.isBlender ? '' : `<span class="badge ${p.hex ? p.hexSource : 'none'}">${t('src' + (p.hex ? p.hexSource : 'none'))}${p.hex && p.uncertain ? ' ≈' : ''}</span>`);
 const sub = p => p.name || p.group || '';
+// Sortering på kod: familj (bokstäver) i bokstavsordning, sedan nummer i stigande ordning.
+// Vid samma nummer (t.ex. R015 och R15) kommer koden med inledande nolla först.
+const codeKey = c => { const m = c.match(/^([A-Z]*)(\d*)$/) || [, c, '']; return [m[1], m[2] === '' ? -1 : parseInt(m[2], 10), m[2].length]; };
+const byCode = (a, b) => { const x = codeKey(a.code), y = codeKey(b.code); return x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : x[1] - y[1] || y[2] - x[2]; };
 
 // ---------------- Beräkning ----------------
 function recompute() {
@@ -181,15 +185,15 @@ const closeSheet = () => sheet.open && sheet.close();
 sheet.addEventListener('click', e => { if (e.target === sheet) closeSheet(); });
 
 function openPicker(which) {
-  const pens = R.colorPens();
-  const fams = [...new Set(pens.map(p => p.group || p.family))];
+  const pens = R.colorPens().slice().sort(byCode);
+  const fams = [...new Set(pens.map(p => p.family))];
   let q = '', fam = '';
   openSheet(`<div class="sheet-head"><div class="row"><h3 class="grow">${t(which)} – ${t('choose')}</h3><button class="btn ghost" data-close>${t('close')}</button></div>
       <input class="search" id="pSearch" type="search" placeholder="${t('searchCode')}" autocomplete="off" autocapitalize="characters" style="margin-top:10px">
       <div class="chips" id="pFams"><button data-f="" class="on">${t('all')}</button>${fams.map(f => `<button data-f="${esc(f)}">${esc(f)}</button>`).join('')}</div></div>
     <div class="grid" id="pGrid"></div>`, body => {
     const draw = () => {
-      const list = pens.filter(p => matches(p, q) && (!fam || (p.group || p.family) === fam));
+      const list = pens.filter(p => matches(p, q) && (!fam || p.family === fam));
       body.querySelector('#pGrid').innerHTML = list.length ? list.map(p => `<button class="tile ${S[which] === p.code ? 'on' : ''}" data-code="${esc(p.code)}">
         <div class="sw" style="background:${p.hex}"></div><div class="code">${esc(p.code)}</div></button>`).join('') : `<p class="muted">${t('noResults')}</p>`;
     };
