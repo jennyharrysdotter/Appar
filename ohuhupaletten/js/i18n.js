@@ -67,6 +67,7 @@ const dict = {
         'Komplementär: färger mitt emot varandra, till exempel blått och orange. Ger kontrast.',
         'Triadisk: tre färgområden jämnt fördelade runt färghjulet, till exempel rött, gult och blått.',
         'Årstid & högtid: välj till exempel Höst eller Jul. Appen utgår från typiska färger för temat och väljer de av dina pennor som ligger närmast, med lite slump så att det blir olika varje gång.',
+        'Färgriktning (för fri slump, monokromatisk och årstid & högtid) håller paletten inom en färgton. Vinter + Blå ger till exempel isiga blå toner, Höst + Röd/rosa ger djupa röda.',
         'Stämning styr vilka pennor som får vara med: klara, dämpade, pastell, mörka, jordnära eller gråtoner. Finns för få pennor som passar fyller appen på med närliggande pennor.',
       ]],
       pshadow: ['Grundfärger och skuggor', [
@@ -119,6 +120,9 @@ const dict = {
     favBackup: 'Säkerhetskopia', favBackupInfo: 'Favoriterna sparas bara på den här telefonen. Exportera en fil då och då, så kan du läsa in dem igen om du byter telefon eller rensar webbläsaren.',
     favExport: 'Exportera favoriter', favImport: 'Importera favoriter',
     favImported: (r) => `${r.added} favoriter importerade` + (r.skipped ? `, ${r.skipped} fanns redan eller kunde inte läsas.` : '.'),
+    palDir: 'Färgriktning (valfritt)',
+    dir_any: 'Blandat', dir_red: 'Röd/rosa', dir_orange: 'Orange', dir_yellow: 'Gul', dir_green: 'Grön', dir_teal: 'Turkos',
+    dir_blue: 'Blå', dir_purple: 'Lila', dir_brown: 'Brun', dir_grey: 'Grå',
     palSeasons: 'Årstider', palHolidays: 'Högtider',
     th_spring: 'Vår', th_summer: 'Sommar', th_autumn: 'Höst', th_winter: 'Vinter',
     th_christmas: 'Jul', th_easter: 'Påsk', th_midsummer: 'Midsommar', th_halloween: 'Halloween', th_valentine: 'Alla hjärtans dag', th_newyear: 'Nyår',

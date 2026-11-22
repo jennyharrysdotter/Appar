@@ -1,5 +1,5 @@
 // Palettmotorn: slumpar fram harmoniska grundfärger ur dina pennor och föreslår skuggpennor till varje.
-import { deltaE, toOklch, hexToOklab } from './color.js';
+import { deltaE, toOklch, fromOklch, hexToOklab } from './color.js';
 
 const deg = r => ((r * 180) / Math.PI + 360) % 360;
 const hueDiff = (a, b) => { const d = Math.abs(a - b) % 360; return d > 180 ? 360 - d : d; };
@@ -10,6 +10,36 @@ const pickRandom = (list, rnd) => list[Math.floor(rnd() * list.length)];
 export const withLch = pens => pens.map(p => { const [L, C, h] = toOklch(p.lab); return { ...p, L, C, h: deg(h) }; });
 
 const GREY = 0.03;
+
+// Färgriktningar: vilken färgton paletten ska hålla sig till (OKLCH-kulör i grader).
+export const DIRECTIONS = {
+  any: null,
+  red: { c: 15, w: 28 }, orange: { c: 58, w: 18 }, yellow: { c: 97, w: 20 }, green: { c: 145, w: 32 },
+  teal: { c: 195, w: 24 }, blue: { c: 245, w: 38 }, purple: { c: 312, w: 34 },
+  brown: { brown: true }, grey: { grey: true },
+};
+export function inDir(p, dir, widen = 1) {
+  const d = DIRECTIONS[dir];
+  if (!d) return true;
+  if (d.grey) return p.C < 0.035 * widen;
+  if (d.brown) return p.h >= 25 && p.h <= 100 && p.L < 0.72 && p.C >= 0.02 && p.C < 0.14 * widen;
+  return p.C >= 0.015 && hueDiff(p.h, d.c) <= d.w * widen;
+}
+/** Flytta en målfärg in i färgriktningen men behåll dess ljushet och (ungefärliga) mättnad. */
+function steerTarget(lab, dir) {
+  const d = DIRECTIONS[dir];
+  if (!d) return lab;
+  const [L, C, hr] = toOklch(lab); const h = deg(hr);
+  if (d.grey) return fromOklch([L, 0.01, hr]);
+  if (d.brown) return fromOklch([Math.min(L, 0.62), Math.min(Math.max(C, 0.05), 0.09), 60 * Math.PI / 180]);
+  if (C >= 0.025 && hueDiff(h, d.c) <= d.w) return lab;
+  return fromOklch([L, Math.max(C, 0.05), d.c * Math.PI / 180]);
+}
+/** Pennor inom riktningen; vidga stegvis om för få finns. */
+function dirPool(pens, dir, need) {
+  for (const wdn of [1, 1.4, 1.8]) { const r = pens.filter(p => inDir(p, dir, wdn)); if (r.length >= need) return r; }
+  return pens.filter(p => inDir(p, dir, 2.5));
+}
 
 // Teman: typiska färger för årstider och högtider (målfärger – appen väljer dina närmaste pennor).
 export const THEMES = {
@@ -25,18 +55,19 @@ export const THEMES = {
   newyear: { group: 'holiday', colors: ['#d4af37', '#c0c0c8', '#1a1a1a', '#e8d8b0', '#1a2450', '#8a8a96'] },
 };
 
-function themePalette(all, key, count, lockedList, rnd) {
+function themePalette(all, key, count, lockedList, rnd, dir = 'any') {
   const theme = THEMES[key] || THEMES.spring;
   const W = l => [l[0], l[1] * 1.8, l[2] * 1.8];
   const dW = (a, b) => deltaE(W(a), W(b));
   const used = new Set(lockedList.map(p => p.code));
   const bases = [...lockedList];
   // blanda temats färger och ta så många som behövs
-  const slots = theme.colors.map(h => hexToOklab(h)).map(v => [rnd(), v]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+  const pool = dir === 'any' ? all : dirPool(all, dir, count * 3);
+  const slots = theme.colors.map(h => steerTarget(hexToOklab(h), dir)).map(v => [rnd(), v]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
   let i = 0;
   while (bases.length < count && i < slots.length * 2) {
     const target = slots[i % slots.length]; i++;
-    const cands = all.filter(p => !used.has(p.code) && bases.every(b => deltaE(b.lab, p.lab) >= 10))
+    const cands = pool.filter(p => !used.has(p.code) && bases.every(b => deltaE(b.lab, p.lab) >= (dir === 'any' ? 10 : 6)))
       .map(p => ({ p, d: dW(p.lab, target) })).sort((a, b) => a.d - b.d).slice(0, 4);
     if (!cands.length) continue;
     const pick = cands[Math.floor(rnd() * Math.min(cands.length, 3))].p;
@@ -72,12 +103,12 @@ const HARMONY = {
  * @param {object} o.anchor valfri startpenna
  * @param {Array}  o.locks  låsta grundfärger (pennor) som ska ligga kvar
  */
-export function generatePalette({ pens, type = 'random', mood = 'all', count = 4, anchor = null, locks = [], rnd = Math.random }) {
+export function generatePalette({ pens, type = 'random', mood = 'all', count = 4, anchor = null, locks = [], dir = 'any', rnd = Math.random }) {
   const all = withLch(pens);
   const byCode = new Map(all.map(p => [p.code, p]));
   if (type === 'theme') {
     const lockedT = locks.map(p => byCode.get(p.code)).filter(Boolean).slice(0, count);
-    const { bases, used } = themePalette(all, mood, count, lockedT, rnd);
+    const { bases, used } = themePalette(all, mood, count, lockedT, rnd, dir);
     const lockedSet = new Set(lockedT.map(p => p.code));
     return { bases: bases.map(p => ({ pen: p, locked: lockedSet.has(p.code), shadows: shadowsFor(p, all, used) })), type, mood };
   }
@@ -88,6 +119,10 @@ export function generatePalette({ pens, type = 'random', mood = 'all', count = 4
   const harmonic = type !== 'random' && mood !== 'grey';
   let pool = all.filter(moodOk);
   if (harmonic) pool = pool.filter(p => p.C >= GREY);
+  if (dir !== 'any' && (type === 'random' || type === 'mono')) {
+    const dp = dirPool(pool, dir, count * 2);
+    pool = dp.length >= count ? dp : dirPool(all, dir, count * 2);
+  }
   if (!pool.length) pool = all;
 
   // Startfärg: vald penna, annars första låsta, annars slump ur stämningen
@@ -101,7 +136,7 @@ export function generatePalette({ pens, type = 'random', mood = 'all', count = 4
   }
 
   const h0 = start.h;
-  const minDist = type === 'mono' ? 7 : 14;
+  const minDist = type === 'mono' ? 7 : dir !== 'any' ? 8 : 14;
   const farEnough = p => bases.every(b => !b || deltaE(b.lab, p.lab) >= minDist);
 
   for (let i = 0; i < count; i++) {
@@ -141,13 +176,14 @@ export function generatePalette({ pens, type = 'random', mood = 'all', count = 4
 export function shadowsFor(base, all, used = new Set()) {
   const out = [];
   const chromatic = base.C >= GREY;
-  const cands = all.filter(p => p.L < base.L - 0.04 && (chromatic ? hueDiff(p.h, base.h) <= 35 && p.C >= 0.015 : p.C < 0.05));
+  const cands = all.filter(p => p.L < base.L - 0.04 && (chromatic ? hueDiff(p.h, base.h) <= 35 && p.C >= 0.015 : p.C < 0.04));
   for (const dL of [0.12, 0.24]) {
     const tL = base.L - dL, tC = base.C * 0.9;
     let best = null, bestD = Infinity;
     for (const p of cands) {
       if (used.has(p.code) || out.includes(p)) continue;
-      const d = Math.abs(p.L - tL) * 100 + Math.abs(p.C - tC) * 100 + (chromatic ? hueDiff(p.h, base.h) * 0.35 : 0);
+      const d = Math.abs(p.L - tL) * 100 + Math.abs(p.C - tC) * 100 + (chromatic ? hueDiff(p.h, base.h) * 0.35
+        : (Math.abs(p.lab[1] - base.lab[1]) + Math.abs(p.lab[2] - base.lab[2])) * 400);
       if (d < bestD) { bestD = d; best = p; }
     }
     if (best && (!out.length || best.L < out[out.length - 1].L)) { out.push(best); used.add(best.code); }

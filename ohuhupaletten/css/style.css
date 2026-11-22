@@ -208,3 +208,8 @@ dialog#sheet::backdrop { background: rgba(30, 25, 20, .35); }
 .favcodes .arrow { color: var(--ink-3); font-size: 12px; }
 .sh i.nohex { background: var(--hatch); }
 .tabs button { font-size: 11px; }
+
+.dirchip { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.d-red { background: #e0405a; } .d-orange { background: #f08a2c; } .d-yellow { background: #f2cc35; } .d-green { background: #4caf50; }
+.d-teal { background: #20b2aa; } .d-blue { background: #3f7fd9; } .d-purple { background: #8a5cc8; } .d-brown { background: #8a5a32; } .d-grey { background: #9a9a9a; }
