@@ -213,3 +213,8 @@ dialog#sheet::backdrop { background: rgba(30, 25, 20, .35); }
 .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
 .d-red { background: #e0405a; } .d-orange { background: #f08a2c; } .d-yellow { background: #f2cc35; } .d-green { background: #4caf50; }
 .d-teal { background: #20b2aa; } .d-blue { background: #3f7fd9; } .d-purple { background: #8a5cc8; } .d-brown { background: #8a5a32; } .d-grey { background: #9a9a9a; }
+
+.posnr { width: 18px; flex: none; text-align: center; font-size: 12px; font-weight: 700; color: var(--ink-3); }
+.pentap { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; border: 0; background: none; padding: 0; text-align: left; }
+.palrow .stepitem { gap: 8px; }
+.palrow .shadows { margin-left: 92px; }

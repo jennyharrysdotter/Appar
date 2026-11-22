@@ -75,6 +75,7 @@ const dict = {
         'Grundfärgerna är pennorna du bygger målningen på.',
         'Bredvid varje grundfärg föreslås upp till två skuggpennor: en mellanskugga och en djup skugga i samma färgton, lite mörkare och något mindre mättade.',
         'Står det ”mörkaste i sin ton” finns ingen mörkare penna i samma färgton i din samling – prova en grå eller en komplementfärg som skugga.',
+        'Bygg stegvis: Lås behåller en penna på sin plats när du slumpar igen. 🎲 byter bara den pennan. Trycker du på pennan visas liknande pennor du äger, så kan du välja själv.',
         'Ingen penna förekommer två gånger i samma palett.',
       ]],
       result: ['Så läser du resultatet', [
@@ -103,7 +104,8 @@ const dict = {
     palType: 'Typ av palett', palMood: 'Stämning', palCount: 'Grundfärger', palAnchor: 'Utgå från en penna (valfritt)',
     palAnchorNone: 'Slumpa startfärg', palAnchorClear: 'Ta bort startpenna',
     palRoll: 'Slumpa palett', palReroll: 'Slumpa igen', palResult: 'Din palett', palShadows: 'Skuggor:',
-    palNoShadow: 'mörkaste i sin ton', palLockHint: 'Lås färger du vill behålla – de ligger kvar när du slumpar igen.',
+    palNoShadow: 'mörkaste i sin ton', palLockHint: 'Bygg stegvis: lås det du gillar och tryck Slumpa igen, tryck 🎲 för att byta en enda penna, eller tryck på pennan för att välja en liknande själv.',
+    palOne: 'Byt bara den här', palNoAlt: 'Hittade inget annat förslag – prova en annan stämning eller färgriktning.', palAltTitle: 'Välj en annan penna', palAltNow: 'Nu',
     pt_random: 'Fri slump', pt_mono: 'Monokromatisk', pt_analog: 'Analog', pt_complement: 'Komplementär', pt_triad: 'Triadisk', pt_theme: 'Årstid & högtid',
     pth_random: 'Blandade färger utan regel – bra för ny inspiration.',
     pth_mono: 'Ljusa och mörka nyanser av samma färg.',

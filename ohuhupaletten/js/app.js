@@ -1,7 +1,8 @@
 import { t, getLang, setLang } from './i18n.js';
 import * as R from './registry.js';
 import { computeBlend, alternativesFor } from './blend.js';
-import { generatePalette } from './palette.js';
+import { generatePalette, shadowsFor, withLch } from './palette.js';
+import { deltaE } from './color.js';
 import * as F from './favorites.js';
 import { normalizeHex } from './color.js';
 
@@ -145,8 +146,54 @@ function rollPalette() {
   const locks = P.locks.map(c => R.getPen(c)).filter(p => p?.lab);
   const anchor = P.anchor ? R.getPen(P.anchor) : null;
   const r = generatePalette({ pens, type: P.type, mood: P.mood, theme: P.theme || 'spring', count: P.count, anchor: anchor?.lab ? anchor : null, locks, dir: DIR_TYPES.includes(P.type) ? (P.dir || 'any') : 'any' });
-  P.result = r.bases.map(b => ({ code: b.pen.code, shadows: b.shadows.map(x => x.code) }));
+  const fresh = r.bases.map(b => ({ code: b.pen.code, shadows: b.shadows.map(x => x.code) }));
+  // Låsta pennor behåller sin plats; nya förslag fyller de olåsta platserna i ordning.
+  if (P.result && P.locks.length && P.result.length === P.count) {
+    const newOnes = fresh.filter(b => !P.locks.includes(b.code));
+    P.result = P.result.map(old => P.locks.includes(old.code) ? (fresh.find(b => b.code === old.code) || old) : newOnes.shift() || old);
+  } else P.result = fresh;
   savePal();
+}
+
+/** Byt ut en enda grundfärg (plats i) och ge den nya skuggor – övriga ligger kvar orörda. */
+function replaceOne(i, code = null) {
+  const pens = R.colorPens(); if (!pens.length || !P.result) return;
+  const others = P.result.filter((_, j) => j !== i);
+  const taken = new Set(others.flatMap(b => [b.code, ...b.shadows]));
+  let pick = code;
+  if (!pick) {
+    const prev = P.result[i].code;
+    for (let k = 0; k < 8 && (!pick || pick === prev || taken.has(pick)); k++) {
+      const r = generatePalette({ pens, type: P.type, mood: P.mood, theme: P.theme || 'spring', count: P.count,
+        locks: others.map(b => R.getPen(b.code)).filter(p => p?.lab), dir: DIR_TYPES.includes(P.type) ? (P.dir || 'any') : 'any' });
+      pick = r.bases.map(b => b.pen.code).find(c => !taken.has(c) && c !== prev) || null;
+    }
+    if (!pick) return toast(t('palNoAlt'));
+  }
+  const all = withLch(pens);
+  const base = all.find(p => p.code === pick);
+  taken.add(pick);
+  P.result[i] = { code: pick, shadows: shadowsFor(base, all, taken).map(x => x.code) };
+  P.locks = P.locks.filter(c => c !== P.result[i].code);
+  savePal();
+}
+
+function openPalAlternatives(i) {
+  const cur = R.getPen(P.result[i].code);
+  const taken = new Set(P.result.filter((_, j) => j !== i).flatMap(b => [b.code, ...b.shadows]));
+  const W = l => [l[0], l[1] * 1.8, l[2] * 1.8];
+  const list = R.colorPens().filter(p => !taken.has(p.code) && p.code !== cur.code)
+    .map(p => ({ p, d: deltaE(W(p.lab), W(cur.lab)), real: deltaE(p.lab, cur.lab) })).sort((a, b) => a.d - b.d).slice(0, 24);
+  openSheet(`<div class="sheet-head"><div class="row"><h3 class="grow">${t('palAltTitle')}</h3><button class="btn ghost" data-close>${t('close')}</button></div>
+      <div class="row" style="margin-top:10px"><div class="chip-sw" style="background:${cur.hex};width:44px;height:44px"></div>
+        <div class="grow"><div class="small">${t('palAltNow')}</div><div style="font-weight:700">${esc(cur.code)}</div></div></div></div>
+    <ul class="plist" id="paList">${list.map(a => `<li class="prow" data-code="${esc(a.p.code)}"><div class="sw" style="background:${a.p.hex}"></div>
+      <div class="txt"><div class="code">${esc(a.p.code)}</div><div class="nm">${esc(sub(a.p))}</div></div><span class="de">ΔE ${fmt(a.real)}</span></li>`).join('')}</ul>`, body => {
+    body.querySelector('#paList').addEventListener('click', e => {
+      const row = e.target.closest('.prow'); if (!row) return;
+      replaceOne(i, row.dataset.code); closeSheet(); render();
+    });
+  });
 }
 
 function viewPalette() {
@@ -174,15 +221,17 @@ function viewPalette() {
         ${anc ? `<button class="btn" data-act="pAnchorClear" aria-label="${t('palAnchorClear')}">✕</button>` : ''}</div>`}
     </div>
     <button class="btn primary big" data-act="pRoll">🎲 ${t(P.result ? 'palReroll' : 'palRoll')}</button>`;
-  const res = (P.result || []).map(b => ({ pen: R.getPen(b.code), shadows: b.shadows.map(c => R.getPen(c)).filter(p => p?.hex) })).filter(b => b.pen?.hex);
+  const res = (P.result || []).map((b, idx) => ({ idx, pen: R.getPen(b.code), shadows: b.shadows.map(c => R.getPen(c)).filter(p => p?.hex) })).filter(b => b.pen?.hex);
   if (res.length) {
     html += `<div class="card"><h2 style="margin:0 0 10px;display:flex;align-items:center;gap:8px">${t('palResult')} ${info('pshadow')}</h2>
       <div class="band">${res.map(b => `<div style="background:${b.pen.hex}"></div>`).join('')}</div>
       <ul class="steplist">${res.map(b => {
         const locked = P.locks.includes(b.pen.code);
         return `<li class="palrow">
-          <div class="stepitem"><div class="chip-sw" style="background:${b.pen.hex}"></div>
-            <div class="txt"><div class="code">${esc(b.pen.code)}${b.pen.uncertain ? ' <span class="small">≈</span>' : ''}</div><div class="nm">${esc(sub(b.pen))}</div></div>
+          <div class="stepitem"><span class="posnr">${b.idx + 1}</span>
+            <button class="pentap" data-act="pAlt" data-i="${b.idx}"><div class="chip-sw" style="background:${b.pen.hex}"></div>
+            <div class="txt"><div class="code">${esc(b.pen.code)}${b.pen.uncertain ? ' <span class="small">≈</span>' : ''}</div><div class="nm">${esc(sub(b.pen))}</div></div></button>
+            ${locked ? '' : `<button class="lockbtn" data-act="pOne" data-i="${b.idx}" aria-label="${t('palOne')}">🎲</button>`}
             <button class="lockbtn ${locked ? 'on' : ''}" data-act="pLock" data-code="${esc(b.pen.code)}">${locked ? '🔒' : t('lock')}</button></div>
           <div class="shadows"><span class="small">${t('palShadows')}</span>${b.shadows.length ? b.shadows.map(x => `<span class="sh"><i style="background:${x.hex}"></i>${esc(x.code)}</span>`).join('') : `<span class="small">${t('palNoShadow')}</span>`}</div>
         </li>`; }).join('')}</ul>
@@ -463,6 +512,8 @@ document.addEventListener('click', async e => {
   if (a === 'pMood') { P.mood = el.dataset.v; P.locks = []; rollPalette(); render(); }
   if (a === 'pCount') { P.count = Math.min(5, Math.max(3, P.count + Number(el.dataset.d))); P.locks = P.locks.slice(0, P.count); rollPalette(); render(); }
   if (a === 'pRoll') { rollPalette(); render(); }
+  if (a === 'pOne') { replaceOne(Number(el.dataset.i)); render(); }
+  if (a === 'pAlt') openPalAlternatives(Number(el.dataset.i));
   if (a === 'pLock') { const c = el.dataset.code; P.locks = P.locks.includes(c) ? P.locks.filter(x => x !== c) : [...P.locks, c].slice(0, P.count); savePal(); render(); }
   if (a === 'pAnchor') openPicker('palAnchor', code => { P.anchor = code; P.locks = []; rollPalette(); }, P.anchor, t('palAnchor'));
   if (a === 'pAnchorClear') { P.anchor = null; P.locks = []; rollPalette(); render(); }
