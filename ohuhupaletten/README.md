@@ -53,7 +53,7 @@ Ohuhu publicerar inga HEX-värden. Värdena i `data/pens.json` är uppmätta fr�
 
 Appen ligger i mappen `ohuhupaletten/` i repot Appar och publiceras med GitHub Pages: https://jennyharrysdotter.github.io/Appar/ohuhupaletten/
 
-Den är en PWA (manifest + service worker) och kan installeras på hemskärmen via Chrome → ⋮ → *Lägg till på startskärmen / Installera app*. Höj `CACHE`-versionen i `sw.js` när filer ändras.
+Den är en PWA (manifest + service worker). Installationsguiden för Android finns i appen under fliken **Om**: öppna adressen i Chrome → ⋮ → *Installera app* / *Lägg till på startskärmen* → *Installera*. Höj `CACHE`-versionen i `sw.js` när filer ändras.
 
 ## Testa lokalt (dator, valfritt)
 

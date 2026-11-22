@@ -9,6 +9,12 @@ const fmt = x => (Math.round(x * 10) / 10).toFixed(1);
 const FAR = 10; // ΔE över detta = "ingen nära penna"
 
 const BLEND_KEY = 'obl.blend.v1';
+const APP_URL = 'https://jennyharrysdotter.github.io/Appar/ohuhupaletten/';
+let installPrompt = null;
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); installPrompt = e; if (S.view === 'info') render(); });
+addEventListener('appinstalled', () => { installPrompt = null; if (S.view === 'info') render(); });
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches;
+const inAppBrowser = () => /FBAN|FBAV|Instagram|Snapchat|Messenger|; wv\)/i.test(navigator.userAgent);
 const S = {
   view: 'blend', start: null, end: null, n: 5, mode: 'vivid', locks: {}, result: null, error: null,
   m: { q: '', fam: '', grp: '', has: 'all' }, lastCommunity: null,
@@ -165,8 +171,20 @@ function renderMarkerList() {
       ${badge(p)}</li>`).join('') : `<li class="muted" style="padding:14px 4px">${t('noResults')}</li>`;
 }
 
+function viewInstall() {
+  if (isStandalone()) return `<div class="card"><h2>${t('installTitle')}</h2><p class="muted" style="margin:0">✓ ${t('installDone')}</p></div>`;
+  return `<div class="card" id="install"><h2>${t('installTitle')}</h2>
+    ${inAppBrowser() ? `<div class="note" style="margin-top:0">${t('installOpenedInApp')}</div>` : ''}
+    ${installPrompt ? `<button class="btn primary" data-act="install" style="width:100%;margin-bottom:12px">${t('installButton')}</button>` : ''}
+    <ol class="steps">${t('installSteps').map(x => `<li>${esc(x)}</li>`).join('')}</ol>
+    <p class="muted">${t('installTips')}</p>
+    <div class="label" style="margin-top:12px">${t('installAddress')}</div>
+    <div class="row"><code class="addr grow">${APP_URL}</code><button class="btn" data-act="copyLink">${t('copyLink')}</button></div>
+  </div>`;
+}
+
 function viewInfo() {
-  return `<div class="card"><h2>${t('aboutTitle')}</h2>
+  return viewInstall() + `<div class="card"><h2>${t('aboutTitle')}</h2>
       ${['about1', 'about2', 'about3', 'about4'].map(k => `<p class="muted">${t(k)}</p>`).join('')}</div>
     <div class="card"><h2>${t('dataTitle')}</h2><p class="muted">${t('dataBody')}</p>
       <p class="small">${esc(R.COMMUNITY_LABEL)}</p></div>
@@ -316,6 +334,8 @@ document.addEventListener('click', async e => {
     if (S.locks[i]) delete S.locks[i]; else S.locks[i] = S.result.items[i].pen.code;
     recompute(); render();
   } else if (a === 'alts') openAlternatives(Number(el.dataset.i));
+  if (a === 'install' && installPrompt) { installPrompt.prompt(); installPrompt.userChoice.finally(() => { installPrompt = null; render(); }); }
+  if (a === 'copyLink') { try { await navigator.clipboard.writeText(APP_URL); toast(t('copied')); } catch { toast(APP_URL, 6000); } }
   if (a === 'unlockAll') { S.locks = {}; recompute(); render(); }
   if (a === 'mHas') { S.m.has = el.dataset.v; render(); }
   if (a === 'mFam') { S.m.fam = el.dataset.v; render(); }
