@@ -68,6 +68,7 @@ const dict = {
         'Triadisk: tre färgområden jämnt fördelade runt färghjulet, till exempel rött, gult och blått.',
         'Årstid & högtid: välj till exempel Höst eller Jul. Appen utgår från typiska färger för temat och väljer de av dina pennor som ligger närmast, med lite slump så att det blir olika varje gång.',
         'Färgriktning (för fri slump, monokromatisk och årstid & högtid) håller paletten inom en färgton. Vinter + Blå ger till exempel isiga blå toner, Höst + Röd/rosa ger djupa röda.',
+        'Stämning går också att kombinera med årstider och högtider: Höst + Pastell ger ljusa, mjuka höstfärger, Jul + Dämpade ger en lugn, nordisk jul.',
         'Stämning styr vilka pennor som får vara med: klara, dämpade, pastell, mörka, jordnära eller gråtoner. Finns för få pennor som passar fyller appen på med närliggande pennor.',
       ]],
       pshadow: ['Grundfärger och skuggor', [

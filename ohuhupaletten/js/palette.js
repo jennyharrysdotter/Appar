@@ -55,23 +55,51 @@ export const THEMES = {
   newyear: { group: 'holiday', colors: ['#d4af37', '#c0c0c8', '#1a1a1a', '#e8d8b0', '#1a2450', '#8a8a96'] },
 };
 
-function themePalette(all, key, count, lockedList, rnd, dir = 'any') {
+/** Flytta en målfärg mot vald stämning (ljushet/mättnad), behåll färgtonen. */
+function moodTarget(lab, mood) {
+  if (!mood || mood === 'all') return lab;
+  let [L, C, h] = toOklch(lab);
+  if (mood === 'vivid') { C = Math.max(C, 0.13); L = Math.min(Math.max(L, 0.55), 0.85); }
+  if (mood === 'muted') { C = Math.min(Math.max(C * 0.55, 0.035), 0.08); L = Math.min(Math.max(L, 0.4), 0.82); }
+  if (mood === 'pastel') { L = Math.max(L, 0.86); C = Math.min(Math.max(C, 0.04), 0.09); }
+  if (mood === 'dark') { L = Math.min(L, 0.42); C = Math.max(C, 0.04); }
+  if (mood === 'earthy') { C = Math.min(Math.max(C, 0.04), 0.1); L = Math.min(Math.max(L, 0.38), 0.75); }
+  if (mood === 'grey') C = 0.01;
+  return fromOklch([L, C, h]);
+}
+
+function themePalette(all, key, count, lockedList, rnd, dir = 'any', mood = 'all') {
   const theme = THEMES[key] || THEMES.spring;
   const W = l => [l[0], l[1] * 1.8, l[2] * 1.8];
   const dW = (a, b) => deltaE(W(a), W(b));
   const used = new Set(lockedList.map(p => p.code));
   const bases = [...lockedList];
   // blanda temats färger och ta så många som behövs
-  const pool = dir === 'any' ? all : dirPool(all, dir, count * 3);
-  const slots = theme.colors.map(h => steerTarget(hexToOklab(h), dir)).map(v => [rnd(), v]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+  let pool = dir === 'any' ? all : dirPool(all, dir, count * 3);
+  if (mood !== 'all') { const mp = pool.filter(MOODS[mood]); if (mp.length >= count * 2) pool = mp; else { const ma = all.filter(MOODS[mood]); if (dir === 'any' && ma.length >= count * 2) pool = ma; } }
+  const slots = theme.colors.map(h => steerTarget(moodTarget(hexToOklab(h), mood), dir)).map(v => [rnd(), v]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
   let i = 0;
   while (bases.length < count && i < slots.length * 2) {
     const target = slots[i % slots.length]; i++;
-    const cands = pool.filter(p => !used.has(p.code) && bases.every(b => deltaE(b.lab, p.lab) >= (dir === 'any' ? 10 : 6)))
-      .map(p => ({ p, d: dW(p.lab, target) })).sort((a, b) => a.d - b.d).slice(0, 4);
+    const minD = dir === 'any' && mood === 'all' ? 10 : 5;
+    let cands = [];
+    for (const md of [minD, minD / 2, 0]) {
+      cands = pool.filter(p => !used.has(p.code) && bases.every(b => deltaE(b.lab, p.lab) >= md))
+        .map(p => ({ p, d: dW(p.lab, target) })).filter(c => c.d <= 26).sort((a, b) => a.d - b.d).slice(0, 4);
+      if (cands.length) break;
+    }
     if (!cands.length) continue;
     const pick = cands[Math.floor(rnd() * Math.min(cands.length, 3))].p;
     bases.push(pick); used.add(pick.code);
+  }
+  // Reserv: snäva kombinationer (t.ex. pastell + röd) – fyll på med närmaste pennor utan avståndskrav.
+  for (const src of [pool, all]) {
+    let j = 0;
+    while (bases.length < count && j < slots.length * 3) {
+      const target = slots[j % slots.length]; j++;
+      const best = src.filter(p => !used.has(p.code)).map(p => ({ p, d: dW(p.lab, target) })).sort((a, b) => a.d - b.d)[0];
+      if (best) { bases.push(best.p); used.add(best.p.code); }
+    }
   }
   return { bases, used };
 } // under detta räknas pennan som grå (saknar tydlig färgton)
@@ -103,12 +131,12 @@ const HARMONY = {
  * @param {object} o.anchor valfri startpenna
  * @param {Array}  o.locks  låsta grundfärger (pennor) som ska ligga kvar
  */
-export function generatePalette({ pens, type = 'random', mood = 'all', count = 4, anchor = null, locks = [], dir = 'any', rnd = Math.random }) {
+export function generatePalette({ pens, type = 'random', mood = 'all', theme = 'spring', count = 4, anchor = null, locks = [], dir = 'any', rnd = Math.random }) {
   const all = withLch(pens);
   const byCode = new Map(all.map(p => [p.code, p]));
   if (type === 'theme') {
     const lockedT = locks.map(p => byCode.get(p.code)).filter(Boolean).slice(0, count);
-    const { bases, used } = themePalette(all, mood, count, lockedT, rnd, dir);
+    const { bases, used } = themePalette(all, theme, count, lockedT, rnd, dir, mood);
     const lockedSet = new Set(lockedT.map(p => p.code));
     return { bases: bases.map(p => ({ pen: p, locked: lockedSet.has(p.code), shadows: shadowsFor(p, all, used) })), type, mood };
   }
