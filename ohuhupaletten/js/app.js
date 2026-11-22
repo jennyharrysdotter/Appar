@@ -1,6 +1,7 @@
 import { t, getLang, setLang } from './i18n.js';
 import * as R from './registry.js';
 import { computeBlend, alternativesFor } from './blend.js';
+import { generatePalette } from './palette.js';
 import { normalizeHex } from './color.js';
 
 const $ = s => document.querySelector(s);
@@ -9,6 +10,12 @@ const fmt = x => (Math.round(x * 10) / 10).toFixed(1);
 const FAR = 10; // ΔE över detta = "ingen nära penna"
 
 const BLEND_KEY = 'obl.blend.v1';
+const PAL_KEY = 'obl.palette.v1';
+const P = { type: 'random', mood: 'all', count: 4, anchor: null, locks: [], result: null };
+try { Object.assign(P, JSON.parse(localStorage.getItem(PAL_KEY)) || {}); } catch {}
+const savePal = () => { try { localStorage.setItem(PAL_KEY, JSON.stringify(P)); } catch {} };
+const PTYPES = ['random', 'mono', 'analog', 'complement', 'triad'];
+const PMOODS = ['all', 'vivid', 'muted', 'pastel', 'dark', 'earthy', 'grey'];
 const APP_URL = 'https://jennyharrysdotter.github.io/Appar/ohuhupaletten/';
 let installPrompt = null;
 addEventListener('beforeinstallprompt', e => { e.preventDefault(); installPrompt = e; if (S.view === 'info') render(); });
@@ -62,6 +69,7 @@ function render() {
   document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.view === S.view));
   const main = $('#main');
   if (S.view === 'blend') main.innerHTML = viewBlend();
+  if (S.view === 'palette') main.innerHTML = viewPalette();
   if (S.view === 'markers') { main.innerHTML = viewMarkers(); renderMarkerList(); }
   if (S.view === 'info') main.innerHTML = viewInfo();
 }
@@ -121,6 +129,51 @@ function viewBlend() {
   html += `</ul><p class="small" style="margin:10px 2px 0">${t('tapToSwap')}</p></div>`;
   if (r.maxDist > FAR) html += `<div class="note"><span>⚠ ${t('farWarn')}</span></div>`;
   html += `<div class="note"><span><b>${t('digital')}</b>${t('digitalLong')}${anyExternal ? ' ' + t('externalWarn') : ''}${anyUncertain ? ' ≈ ' + t('uncertain') : ''}</span></div>`;
+  return html;
+}
+
+function rollPalette() {
+  const pens = R.colorPens();
+  if (!pens.length) return;
+  const locks = P.locks.map(c => R.getPen(c)).filter(p => p?.lab);
+  const anchor = P.anchor ? R.getPen(P.anchor) : null;
+  const r = generatePalette({ pens, type: P.type, mood: P.mood, count: P.count, anchor: anchor?.lab ? anchor : null, locks });
+  P.result = r.bases.map(b => ({ code: b.pen.code, shadows: b.shadows.map(x => x.code) }));
+  savePal();
+}
+
+function viewPalette() {
+  if (!R.colorPens().length) return viewBlend();
+  const anc = P.anchor ? R.getPen(P.anchor) : null;
+  let html = `<div class="card">
+      <div class="label" style="display:flex;align-items:center;gap:8px">${t('palType')} ${info('ptype')}</div>
+      <div class="chips wrap" style="padding-top:2px">${PTYPES.map(k => `<button data-act="pType" data-v="${k}" class="${P.type === k ? 'on' : ''}">${t('pt_' + k)}</button>`).join('')}</div>
+      <p class="small" style="margin:4px 2px 12px">${t('pth_' + P.type)}</p>
+      <div class="label">${t('palMood')}</div>
+      <div class="chips wrap" style="padding-top:2px">${PMOODS.map(k => `<button data-act="pMood" data-v="${k}" class="${P.mood === k ? 'on' : ''}">${t('pm_' + k)}</button>`).join('')}</div>
+      <div class="ctrl" style="margin:14px 0"><div class="label" style="margin:0">${t('palCount')}</div>
+        <div class="stepper"><button data-act="pCount" data-d="-1" aria-label="Färre">−</button><span>${P.count}</span><button data-act="pCount" data-d="1" aria-label="Fler">+</button></div></div>
+      <div class="label">${t('palAnchor')}</div>
+      <div class="row">
+        <button class="btn grow anchorbtn" data-act="pAnchor">${anc ? `<i style="background:${anc.hex}"></i><b>${esc(anc.code)}</b>` : t('palAnchorNone')}</button>
+        ${anc ? `<button class="btn" data-act="pAnchorClear" aria-label="${t('palAnchorClear')}">✕</button>` : ''}</div>
+    </div>
+    <button class="btn primary big" data-act="pRoll">🎲 ${t(P.result ? 'palReroll' : 'palRoll')}</button>`;
+  const res = (P.result || []).map(b => ({ pen: R.getPen(b.code), shadows: b.shadows.map(c => R.getPen(c)).filter(p => p?.hex) })).filter(b => b.pen?.hex);
+  if (res.length) {
+    html += `<div class="card"><h2 style="margin:0 0 10px;display:flex;align-items:center;gap:8px">${t('palResult')} ${info('pshadow')}</h2>
+      <div class="band">${res.map(b => `<div style="background:${b.pen.hex}"></div>`).join('')}</div>
+      <ul class="steplist">${res.map(b => {
+        const locked = P.locks.includes(b.pen.code);
+        return `<li class="palrow">
+          <div class="stepitem"><div class="chip-sw" style="background:${b.pen.hex}"></div>
+            <div class="txt"><div class="code">${esc(b.pen.code)}${b.pen.uncertain ? ' <span class="small">≈</span>' : ''}</div><div class="nm">${esc(sub(b.pen))}</div></div>
+            <button class="lockbtn ${locked ? 'on' : ''}" data-act="pLock" data-code="${esc(b.pen.code)}">${locked ? '🔒' : t('lock')}</button></div>
+          <div class="shadows"><span class="small">${t('palShadows')}</span>${b.shadows.length ? b.shadows.map(x => `<span class="sh"><i style="background:${x.hex}"></i>${esc(x.code)}</span>`).join('') : `<span class="small">${t('palNoShadow')}</span>`}</div>
+        </li>`; }).join('')}</ul>
+      <p class="small" style="margin:10px 2px 0">${t('palLockHint')}</p></div>
+      <div class="note"><span><b>${t('digital')}</b>${t('digitalLong')}</span></div>`;
+  }
   return html;
 }
 
@@ -204,17 +257,17 @@ function openSheet(html, mount) {
 const closeSheet = () => sheet.open && sheet.close();
 sheet.addEventListener('click', e => { if (e.target === sheet) closeSheet(); });
 
-function openPicker(which) {
+function openPicker(which, onPick, current = S[which], title = `${t(which)} – ${t('choose')}`) {
   const pens = R.colorPens().slice().sort(byCode);
   const fams = [...new Set(pens.map(p => p.family))];
   let q = '', fam = '';
-  openSheet(`<div class="sheet-head"><div class="row"><h3 class="grow">${t(which)} – ${t('choose')}</h3><button class="btn ghost" data-close>${t('close')}</button></div>
+  openSheet(`<div class="sheet-head"><div class="row"><h3 class="grow">${title}</h3><button class="btn ghost" data-close>${t('close')}</button></div>
       <input class="search" id="pSearch" type="search" placeholder="${t('searchCode')}" autocomplete="off" autocapitalize="characters" style="margin-top:10px">
       <div class="chips" id="pFams"><button data-f="" class="on">${t('all')}</button>${fams.map(f => `<button data-f="${esc(f)}">${esc(f)}</button>`).join('')}</div></div>
     <div class="grid" id="pGrid"></div>`, body => {
     const draw = () => {
       const list = pens.filter(p => matches(p, q) && (!fam || p.family === fam));
-      body.querySelector('#pGrid').innerHTML = list.length ? list.map(p => `<button class="tile ${S[which] === p.code ? 'on' : ''}" data-code="${esc(p.code)}">
+      body.querySelector('#pGrid').innerHTML = list.length ? list.map(p => `<button class="tile ${current === p.code ? 'on' : ''}" data-code="${esc(p.code)}">
         <div class="sw" style="background:${p.hex}"></div><div class="code">${esc(p.code)}</div></button>`).join('') : `<p class="muted">${t('noResults')}</p>`;
     };
     draw();
@@ -225,7 +278,8 @@ function openPicker(which) {
     });
     body.querySelector('#pGrid').addEventListener('click', e => {
       const b = e.target.closest('.tile'); if (!b) return;
-      S[which] = b.dataset.code; S.locks = {}; recompute(); closeSheet(); render();
+      if (onPick) onPick(b.dataset.code); else { S[which] = b.dataset.code; S.locks = {}; recompute(); }
+      closeSheet(); render();
     });
   });
 }
@@ -344,6 +398,13 @@ document.addEventListener('click', async e => {
     openSheet(`<div class="sheet-head"><div class="row"><h3 class="grow">${title}</h3><button class="btn ghost" data-close>${t('close')}</button></div></div>
       ${paras.map(x => `<p class="muted" style="font-size:15px">${esc(x)}</p>`).join('')}`);
   }
+  if (a === 'pType') { P.type = el.dataset.v; P.locks = []; rollPalette(); render(); }
+  if (a === 'pMood') { P.mood = el.dataset.v; P.locks = []; rollPalette(); render(); }
+  if (a === 'pCount') { P.count = Math.min(5, Math.max(3, P.count + Number(el.dataset.d))); P.locks = P.locks.slice(0, P.count); rollPalette(); render(); }
+  if (a === 'pRoll') { rollPalette(); render(); }
+  if (a === 'pLock') { const c = el.dataset.code; P.locks = P.locks.includes(c) ? P.locks.filter(x => x !== c) : [...P.locks, c].slice(0, P.count); savePal(); render(); }
+  if (a === 'pAnchor') openPicker('palAnchor', code => { P.anchor = code; P.locks = []; rollPalette(); }, P.anchor, t('palAnchor'));
+  if (a === 'pAnchorClear') { P.anchor = null; P.locks = []; rollPalette(); render(); }
   if (a === 'unlockAll') { S.locks = {}; recompute(); render(); }
   if (a === 'mHas') { S.m.has = el.dataset.v; render(); }
   if (a === 'mFam') { S.m.fam = el.dataset.v; render(); }

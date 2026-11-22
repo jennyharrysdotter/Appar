@@ -2,7 +2,7 @@
 const dict = {
   sv: {
     appTagline: 'Övergångar med pennorna du äger',
-    navBlend: 'Övergångar', navMarkers: 'Mina pennor', navInfo: 'Om',
+    navBlend: 'Övergångar', navPalette: 'Paletter', navMarkers: 'Mina pennor', navInfo: 'Om',
     start: 'Start', end: 'Slut', choose: 'Välj penna', swapEnds: 'Byt plats på start och slut',
     steps: 'Pennor i övergången', path: 'Väg', pathDirect: 'Direkt', pathVivid: 'Via färghjulet',
     pathDirectHint: 'Går rakt mellan färgerna. Mellanstegen blir mjuka och lite dämpade – bra för skuggor, naturtoner och övergångar mot grått eller brunt.', pathVividHint: 'Följer färghjulet och behåller färgstyrkan. Gul till grön går via gulgrönt, gul till röd via orange – bra när du vill ha en klar och levande skala.',
@@ -60,6 +60,20 @@ const dict = {
     copyLink: 'Kopiera länk', copied: 'Länken är kopierad',
     bandLegend: 'Överst: dina pennor · Under: den perfekta övergången',
     help: {
+      ptype: ['Typer av paletter', [
+        'Fri slump: blandade färger utan regel, bra för ny inspiration.',
+        'Monokromatisk: en färg i olika ljusa och mörka nyanser.',
+        'Analog: färger som ligger bredvid varandra på färghjulet, till exempel gult, orange och rött.',
+        'Komplementär: färger mitt emot varandra, till exempel blått och orange. Ger kontrast.',
+        'Triadisk: tre färgområden jämnt fördelade runt färghjulet, till exempel rött, gult och blått.',
+        'Stämning styr vilka pennor som får vara med: klara, dämpade, pastell, mörka, jordnära eller gråtoner. Finns för få pennor som passar fyller appen på med närliggande pennor.',
+      ]],
+      pshadow: ['Grundfärger och skuggor', [
+        'Grundfärgerna är pennorna du bygger målningen på.',
+        'Bredvid varje grundfärg föreslås upp till två skuggpennor: en mellanskugga och en djup skugga i samma färgton, lite mörkare och något mindre mättade.',
+        'Står det ”mörkaste i sin ton” finns ingen mörkare penna i samma färgton i din samling – prova en grå eller en komplementfärg som skugga.',
+        'Ingen penna förekommer två gånger i samma palett.',
+      ]],
       result: ['Så läser du resultatet', [
         'Den stora färgremsan visar din övergång med pennorna appen valt, i ordning.',
         'Den tunna remsan under visar den perfekta övergången – vad du skulle få med exakt rätt penna i varje steg. Ju mer lika remsorna är, desto bättre räcker dina pennor till.',
@@ -83,6 +97,17 @@ const dict = {
         'Vill du ha en mjukare övergång – öka antalet pennor med +.',
       ]],
     },
+    palType: 'Typ av palett', palMood: 'Stämning', palCount: 'Grundfärger', palAnchor: 'Utgå från en penna (valfritt)',
+    palAnchorNone: 'Slumpa startfärg', palAnchorClear: 'Ta bort startpenna',
+    palRoll: 'Slumpa palett', palReroll: 'Slumpa igen', palResult: 'Din palett', palShadows: 'Skuggor:',
+    palNoShadow: 'mörkaste i sin ton', palLockHint: 'Lås färger du vill behålla – de ligger kvar när du slumpar igen.',
+    pt_random: 'Fri slump', pt_mono: 'Monokromatisk', pt_analog: 'Analog', pt_complement: 'Komplementär', pt_triad: 'Triadisk',
+    pth_random: 'Blandade färger utan regel – bra för ny inspiration.',
+    pth_mono: 'Ljusa och mörka nyanser av samma färg.',
+    pth_analog: 'Grannfärger på färghjulet – lugnt och sammanhållet.',
+    pth_complement: 'Färger mitt emot varandra på färghjulet – kontrast som får det att lysa.',
+    pth_triad: 'Tre färgområden jämnt fördelade runt färghjulet – livfullt men balanserat.',
+    pm_all: 'Alla', pm_vivid: 'Klara', pm_muted: 'Dämpade', pm_pastel: 'Pastell', pm_dark: 'Mörka', pm_earthy: 'Jordnära', pm_grey: 'Gråtoner',
     language: 'Språk', resetData: 'Återställ mina lokala ändringar', resetConfirm: 'Ta bort alla lokala ändringar och färgvärden på den här enheten?',
     resetDone: 'Lokala ändringar borttagna.', saved: 'Sparat', close: 'Stäng',
   },
